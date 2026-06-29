@@ -40,4 +40,9 @@ export class Authification {
       });
     }
   }
+
+  fillCredentials(login: string, password: string) {
+    this.loginForm.setValue({ login, password });
+    this.message = '';
+  }
 }
