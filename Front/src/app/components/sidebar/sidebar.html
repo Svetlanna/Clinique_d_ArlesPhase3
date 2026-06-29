@@ -1,48 +1,56 @@
-  <nav class="sidebar" aria-label="Navigation principale">
-    <div class="sb-brand">
-      <div class="sb-brand-icon"><i class="ti ti-bolt"></i></div>
-      <span class="sb-brand-name">{{ title() }}</span>
-    </div>
+<nav class="sidebar" aria-label="Navigation principale">
+  <div class="sb-brand">
+    <div class="sb-brand-icon"><i class="ti ti-bolt"></i></div>
+    <span class="sb-brand-name">{{ title() }}</span>
+  </div>
 
-    <div class="sb-section">
-      <div class="sb-label">Principal</div>
-      <button class="sb-item" routerLink="/dashboard" routerLinkActive="active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord</button>
-
+  <div class="sb-section">
+    <div class="sb-label">Principal</div>
+    <button class="sb-item" routerLink="/dashboard" routerLinkActive="active">
+      <i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord
+    </button>
     <button class="sb-item" routerLink="/appareils" routerLinkActive="active">
-      <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareil
+      <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareils
     </button>
-    <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
-      <i class="ti ti-shopping-bag" aria-hidden="true"></i> Les medecines
-    </button>
-      <button class="sb-item"><i class="ti ti-chart-bar" aria-hidden="true"></i>Analytique</button>
-      <button class="sb-item"><i class="ti ti-file-invoice" aria-hidden="true"></i>Factures</button>
-    </div>
+    @if (showMedecin()) {
+      <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
+        <i class="ti ti-shopping-bag" aria-hidden="true"></i>Les médecines
+      </button>
+    }
+  </div>
 
+  @if (showMedecin()) {
     <div class="sb-section">
-      <div class="sb-label">Système</div>
-      <button class="sb-item"><i class="ti ti-settings" aria-hidden="true"></i>Paramètres</button>
-      <button class="sb-item"><i class="ti ti-shield-lock" aria-hidden="true"></i>Permissions</button>
-      <button class="sb-item"><i class="ti ti-terminal-2" aria-hidden="true"></i>Logs</button>
+      <div class="sb-label">Médecin</div>
+      <button class="sb-item" routerLink="/test-medecin" routerLinkActive="active">
+        <i class="ti ti-stethoscope" aria-hidden="true"></i>Espace médecin
+      </button>
     </div>
+  }
 
-    <div class="sb-footer">
-      <div class="sb-item">
-        <div class="avatar">{{ user()?.role }}</div>
-        <div style="flex:1;overflow:hidden">
-          <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+  @if (showOperateur()) {
+    <div class="sb-section">
+      <div class="sb-label">Opérateur</div>
+      <button class="sb-item" routerLink="/test-operateur" routerLinkActive="active">
+        <i class="ti ti-settings-2" aria-hidden="true"></i>Espace opérateur
+      </button>
+    </div>
+  }
 
-      @if (user()) {
-        <p>{{ user()?.mail }}</p>
-        <button (click)="logout()">Déconnexion</button>
-      } @else {
-        <p>Veuillez vous connecter pour accéder au contenu</p>
-      }
-
-          </div>
-
-
+  <div class="sb-footer">
+    <div class="sb-item">
+      <div class="avatar">{{ user()?.role?.substring(0,2)?.toUpperCase() }}</div>
+      <div style="flex:1;overflow:hidden">
+        <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          @if (user()) {
+            <p>{{ user()?.mail }}</p>
+            <button (click)="logout()">Déconnexion</button>
+          } @else {
+            <p>Veuillez vous connecter</p>
+          }
         </div>
-        <i class="ti ti-dots-vertical" aria-hidden="true" style="font-size:15px;color:var(--text-tertiary)"></i>
       </div>
+      <i class="ti ti-dots-vertical" aria-hidden="true" style="font-size:15px;color:var(--text-tertiary)"></i>
     </div>
-  </nav>
+  </div>
+</nav>
