@@ -6,7 +6,7 @@
 
     <div class="sb-section">
       <div class="sb-label">Principal</div>
-      <button class="sb-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord</button>
+      <button class="sb-item" routerLink="/dashboard" routerLinkActive="active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord</button>
 
     <button class="sb-item" routerLink="/appareils" routerLinkActive="active">
       <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareil
@@ -27,16 +27,13 @@
 
     <div class="sb-footer">
       <div class="sb-item">
-        <div class="avatar">{{ user()?.login ?? user()?.data?.role }}</div>
+        <div class="avatar">{{ user()?.role }}</div>
         <div style="flex:1;overflow:hidden">
           <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
 
-
       @if (user()) {
-    <p>{{ user()?.login ?? user()?.data?.login }}
-</p>
-
-  <button (click)="logout()">Déconnexion</button>
+        <p>{{ user()?.mail }}</p>
+        <button (click)="logout()">Déconnexion</button>
       } @else {
         <p>Veuillez vous connecter pour accéder au contenu</p>
       }

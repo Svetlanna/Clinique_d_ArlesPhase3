@@ -4,7 +4,7 @@
       <h2>Connexion</h2>
 
       <div>
-      <input type="email" formControlName="mail" placeholder="Email">
+      <input type="email" formControlName="login" placeholder="Email">
       </div>
 
       <div>
@@ -15,8 +15,8 @@
   </form>
 
 
-  @if (user(); as userData) {
-    <p>Bonjour {{ userData.nom }} ! Vous êtes bien connecté.</p>
+  @if (authService.currentUser(); as userData) {
+    <p>Bonjour {{ userData.mail }} ! Vous êtes bien connecté.</p>
   } @else {
     <p>Veuillez vous connecter pour accéder au contenu.</p>
   }
