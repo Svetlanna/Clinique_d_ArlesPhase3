@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
-
 <div class="shell">
   <app-sidebar></app-sidebar>
 
@@ -12,7 +10,7 @@
         <button class="icon-btn" aria-label="Recherche"><i class="ti ti-search"></i></button>
         <button class="icon-btn" aria-label="Aide"><i class="ti ti-help-circle"></i></button>
         <div class="avatar" style="width:34px;height:34px;font-size:12px">
-          {{ user()?.data?.login?.substring(0,2)?.toUpperCase() || 'JL' }}
+          {{ user()?.mail?.substring(0,2)?.toUpperCase() || '?' }}
         </div>
       </div>
     </div>
