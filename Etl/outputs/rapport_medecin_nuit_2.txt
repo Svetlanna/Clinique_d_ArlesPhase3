@@ -1,0 +1,12 @@
+RAPPORT MEDECIN - Nuit 2
+Evolution SPO2/min: 88.7
+SPO2 Moyen : 96.78638888888891
+SPO2 Median : 97.0
+Duree hypoxie : 0.6666666666666666
+Position dominante : latérale
+Decibels Max : 59.8
+Decibels Moy : 38.906111111111116
+nombre ronflements : 0
+Nombre RERA : 8
+Nombre apnee : 0
+Nombre hypopnee : 0
