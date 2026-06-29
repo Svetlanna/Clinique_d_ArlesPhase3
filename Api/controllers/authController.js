@@ -6,6 +6,7 @@ export const login = async (req, res) => {
     if (!login || !password) {
         return res.status(400).json({ status: 'error', message: 'Champs requis manquants' });
     }
+    
 
     try {
         // La requête est correcte pour votre structure de table actuelle
