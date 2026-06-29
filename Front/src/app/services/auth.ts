@@ -8,13 +8,16 @@ export class AuthService {
   currentUser = signal<any | null>(null);
   appareils = signal<any | null>(null);
   medecines = signal<any | null>(null);
-  
+
   constructor(private http: HttpClient) {}
 
   login(data: any) {
-    return this.http
-      .post('http://localhost:3000/auth/login', data)
-      .pipe(tap((user: any) => this.currentUser.set(user)));
+    return this.http.post('http://localhost:3000/auth/login', data).pipe(
+      tap((reponse: any) => {
+        // Si votre API renvoie { status: 'success', data: {...} }
+        this.currentUser.set(reponse.data);
+      }),
+    );
   }
 
   getAppareils() {
