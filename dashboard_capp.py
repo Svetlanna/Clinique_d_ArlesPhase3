@@ -28,7 +28,7 @@ DB_PATH = "base_analytique.db"
 
 def get_connection():
     """Connexion à la base SQLite Galaxy (thread-safe)."""
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)  # CORRECTION : check_same_thread=False
+    conn = sqlite3.connect(DB_PATH, check_same_thread=True)  # CORRECTION : check_same_thread=False
     conn.row_factory = sqlite3.Row
     return conn
 

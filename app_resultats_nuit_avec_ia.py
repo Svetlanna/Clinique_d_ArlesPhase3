@@ -7,6 +7,9 @@ import pandas as pd
 from pathlib import Path
 import mysql.connector
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
 
 # Import du module IA
 from ia_comorbidites import get_comorbidite_probable, afficher_prediction_comorbidites
@@ -16,12 +19,16 @@ st.set_page_config(page_title="Clinique du Sommeil", layout="wide")
 st.title("Résultats des Nuits d'Étude")
 st.markdown("**Clinique du Sommeil d'Arles**")
 
+# Modification de identifiant pour utiliser le .env
+load_dotenv()
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "root",
-    "database": "cliniquev3"
+    "DB_HOST": os.getenv("DB_HOST"),
+    "DB_USER": os.getenv("DB_USER"),
+    "DB_PORT": os.getenv("DB_PORT"),
+    "DB_PASSWORD": os.getenv("DB_PASSWORD"),
+    "DB_NAME": os.getenv("DB_NAME"),
 }
+
 
 NUITS_DIR = Path("nuits")
 

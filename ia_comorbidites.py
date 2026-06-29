@@ -25,16 +25,22 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
+import os
+from dotenv import load_dotenv
 
 # =============================================================================
 # CONFIGURATION
 # =============================================================================
 
+# Modification de identifiant pour utiliser le .env
+load_dotenv()
+
 MYSQL_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "root",
-    "database": "cliniquev3"
+    "DB_HOST": os.getenv("DB_HOST"),
+    "DB_USER": os.getenv("DB_USER"),
+    "DB_PORT": os.getenv("DB_PORT"),
+    "DB_PASSWORD": os.getenv("DB_PASSWORD"),
+    "DB_NAME": os.getenv("DB_NAME"),
 }
 
 SQLITE_PATH = Path("base_analytique.db")
