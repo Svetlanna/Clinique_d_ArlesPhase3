@@ -1,0 +1,51 @@
+  <nav class="sidebar" aria-label="Navigation principale">
+    <div class="sb-brand">
+      <div class="sb-brand-icon"><i class="ti ti-bolt"></i></div>
+      <span class="sb-brand-name">{{ title() }}</span>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Principal</div>
+      <button class="sb-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord</button>
+
+    <button class="sb-item" routerLink="/appareils" routerLinkActive="active">
+      <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareil
+    </button>
+    <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
+      <i class="ti ti-shopping-bag" aria-hidden="true"></i> Les medecines
+    </button>
+      <button class="sb-item"><i class="ti ti-chart-bar" aria-hidden="true"></i>Analytique</button>
+      <button class="sb-item"><i class="ti ti-file-invoice" aria-hidden="true"></i>Factures</button>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-label">Système</div>
+      <button class="sb-item"><i class="ti ti-settings" aria-hidden="true"></i>Paramètres</button>
+      <button class="sb-item"><i class="ti ti-shield-lock" aria-hidden="true"></i>Permissions</button>
+      <button class="sb-item"><i class="ti ti-terminal-2" aria-hidden="true"></i>Logs</button>
+    </div>
+
+    <div class="sb-footer">
+      <div class="sb-item">
+        <div class="avatar">{{ user()?.login ?? user()?.data?.role }}</div>
+        <div style="flex:1;overflow:hidden">
+          <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+
+
+      @if (user()) {
+    <p>{{ user()?.login ?? user()?.data?.login }}
+</p>
+
+  <button (click)="logout()">Déconnexion</button>
+      } @else {
+        <p>Veuillez vous connecter pour accéder au contenu</p>
+      }
+
+          </div>
+
+
+        </div>
+        <i class="ti ti-dots-vertical" aria-hidden="true" style="font-size:15px;color:var(--text-tertiary)"></i>
+      </div>
+    </div>
+  </nav>

@@ -1,0 +1,25 @@
+  <h1>Welcome to {{ title() }}</h1>
+<div class="auth-container">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h2>Connexion</h2>
+
+      <div>
+      <input type="email" formControlName="mail" placeholder="Email">
+      </div>
+
+      <div>
+        <input type="password" formControlName="password" placeholder="Mot de passe">
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">Se connecter</button>
+  </form>
+
+
+  @if (user(); as userData) {
+    <p>Bonjour {{ userData.nom }} ! Vous êtes bien connecté.</p>
+  } @else {
+    <p>Veuillez vous connecter pour accéder au contenu.</p>
+  }
+</div>
+
+
