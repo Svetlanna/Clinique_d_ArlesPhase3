@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
+import { LocalService } from './local';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -9,13 +10,31 @@ export class AuthService {
   appareils = signal<any | null>(null);
   medecines = signal<any | null>(null);
 
-  constructor(private http: HttpClient) {}
-
+  constructor(
+    private http: HttpClient,
+    private localService: LocalService,
+  ) {
+    const mail = localService.getToken('auth_token');
+    const role = localService.getToken('auth_role');
+    if (mail) {
+      this.currentUser.set({ mail, role });
+    }
+  }
   login(data: any) {
-    return this.http.post('http://localhost:3000/auth/login', data).pipe(
-      tap((reponse: any) => {
-        // Si votre API renvoie { status: 'success', data: {...} }
-        this.currentUser.set(reponse.data);
+    // ← mapping obligatoire ici
+    const payload = {
+      login: data.login,
+      password: data.mot_de_passe,
+    };
+
+    console.log('Payload envoyé:', payload); // vérifie dans la console
+
+    return this.http.post<any>('http://localhost:3000/auth/login', payload).pipe(
+      tap((reponse) => {
+        const userData = reponse.data;
+        this.localService.login(userData.login);
+        this.localService.saveToken('auth_role', userData.role);
+        this.currentUser.set(userData);
       }),
     );
   }
@@ -36,6 +55,6 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.currentUser() !== null;
+    return this.localService.estConnecte();
   }
 }

@@ -22,10 +22,10 @@ export class Authification {
     private authService: AuthService,
     private router: Router,
   ) {
+    // authification.ts
     this.loginForm = this.fb.group({
-      // Renommé 'mail' en 'login' pour correspondre à la colonne SQL
-      login: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(3)]],
+      login: ['', [Validators.required, Validators.email]],
+      mot_de_passe: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -33,14 +33,23 @@ export class Authification {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
         next: (reponse: any) => {
-          // On accède à 'reponse.data' pour récupérer l'objet utilisateur
-          if (reponse && reponse.data) {
-            this.user.set(reponse.data);
+          const userData = reponse?.data ?? reponse;
+          this.authService.currentUser.set(userData);
+          const role = userData?.role;
+
+          if (role === 'admin') {
+            this.router.navigate(['/admin']);
+          } else if (role === 'medecin') {
+            this.router.navigate(['/dashboard']);
+          } else if (role === 'operateur') {
+            this.router.navigate(['/operateur']);
+          } else {
             this.router.navigate(['/dashboard']);
           }
         },
         error: (erreur) => {
-          this.message = 'Connexion refusée !';
+          console.log('Erreur complète :', erreur.error);
+          this.message = 'Identifiants incorrects !';
         },
       });
     }

@@ -2,7 +2,35 @@ import sqlite3
 import os
 import matplotlib.pyplot as plt
 import shutil
+import mysql.connector
+import sys
 from etl.extract import recuperer_donnees
+
+
+def update_nuit_in_db(id_nuit, commentaire, id_medecin):
+    # Charger les variables d'environnement si nécessaire
+    conn = mysql.connector.connect(
+        host=os.environ.get("DB_HOST"),
+        port=os.environ.get("DB_PORT"),
+        user=os.environ.get("DB_USER"),
+        password=os.environ.get("DB_PASSWORD"),
+        database=os.environ.get("DB_NAME")
+    )
+    cursor = conn.cursor()
+    query = "UPDATE nuit_etude SET notes_techniques = %s, id_medecin = %s WHERE id_nuit = %s"
+    cursor.execute(query, (commentaire, id_medecin, id_nuit))
+    conn.commit()
+    conn.close()
+    print("Mise à jour effectuée avec succès")
+
+# Point d'entrée pour le script appelé par Node.js
+if __name__ == "__main__":
+    # sys.argv[0] est le script, les suivants sont les arguments
+    if len(sys.argv) == 4:
+        id_nuit = sys.argv[3]
+        commentaire = sys.argv[1]
+        id_medecin = sys.argv[2]
+        update_nuit_in_db(id_nuit, commentaire, id_medecin)
 
 
 def creer_tables_datalake():

@@ -14,7 +14,7 @@
     <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
       <i class="ti ti-shopping-bag" aria-hidden="true"></i> Les medecines
     </button>
-      <button class="sb-item"><i class="ti ti-chart-bar" aria-hidden="true"></i>Analytique</button>
+      <button class="sb-item"><i class="ti ti-chart-bar" aria-hidden="true"></i>Nuit etude</button>
       <button class="sb-item"><i class="ti ti-file-invoice" aria-hidden="true"></i>Factures</button>
     </div>
 
@@ -23,29 +23,25 @@
       <button class="sb-item"><i class="ti ti-settings" aria-hidden="true"></i>Paramètres</button>
       <button class="sb-item"><i class="ti ti-shield-lock" aria-hidden="true"></i>Permissions</button>
       <button class="sb-item"><i class="ti ti-terminal-2" aria-hidden="true"></i>Logs</button>
+<div class="sb-footer">
+  <div class="sb-item">
+    <div class="avatar">
+      {{ user()?.login?.substring(0,2)?.toUpperCase() || '?' }}
     </div>
-
-    <div class="sb-footer">
-      <div class="sb-item">
-        <div class="avatar">{{ user()?.login ?? user()?.data?.role }}</div>
-        <div style="flex:1;overflow:hidden">
-          <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-
-
+    <div style="flex:1;overflow:hidden">
       @if (user()) {
-    <p>{{ user()?.login ?? user()?.data?.login }}
-</p>
-
-  <button (click)="logout()">Déconnexion</button>
-      } @else {
-        <p>Veuillez vous connecter pour accéder au contenu</p>
-      }
-
-          </div>
-
-
+        <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          {{ user()?.login }}
         </div>
-        <i class="ti ti-dots-vertical" aria-hidden="true" style="font-size:15px;color:var(--text-tertiary)"></i>
-      </div>
+        <div style="font-size:11px;color:var(--text-tertiary)">
+          {{ user()?.role }}
+        </div>
+        <button (click)="logout()">Déconnexion</button>
+      } @else {
+        <p>Veuillez vous connecter</p>
+      }
     </div>
-  </nav>
+    <i class="ti ti-dots-vertical" style="font-size:15px;color:var(--text-tertiary)"></i>
+  </div>
+</div>
+    </div>
