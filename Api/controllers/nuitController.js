@@ -9,6 +9,35 @@ export const runNuit = async (req, res) => {
     }
 };
 
+
+
+
+export const getAllNuitEtude = async (req, res) => {
+    try {
+        // Interroge la vue v_nuit_etude présente dans image_db7f18.jpg
+        const [rows] = await pool.query('SELECT * FROM v_nuit_etude');
+        res.status(200).json({ status: 'success', count: rows.length, data: rows });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
+// Mettre à jour le commentaire
+export const updateCommentaire = async (req, res) => {
+    const { id } = req.params;
+    const { commentaire } = req.body;
+    await pool.execute('UPDATE nuit_etude SET commentaire_medical = ? WHERE id_nuit = ?', [commentaire, id]);
+    res.status(200).json({ status: 'success' });
+};
+
+// Assigner un médecin
+export const assignMedecin = async (req, res) => {
+    const { id } = req.params;
+    const { idMedecin } = req.body;
+    await pool.execute('UPDATE nuit_etude SET id_medecin = ? WHERE id_nuit = ?', [idMedecin, id]);
+    res.status(200).json({ status: 'success' });
+};
+
+
 export const getNuitData = async (req, res) => {
     try {
         const data = await NuitModel.fetchNuitData(req.params.id);
@@ -78,4 +107,17 @@ export const getMedecinById = async (req, res) => {
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }
+};
+export const updateNuit = async (req, res) => {
+    const { id } = req.params;
+    const { commentaire, idMedecin } = req.body;
+
+    const spawn = require("child_process").spawn;
+    // L'ordre ici doit correspondre au sys.argv du script Python
+    const pythonProcess = spawn('python', ["./index.py", "update", commentaire, idMedecin, id]);
+
+    pythonProcess.on('close', (code) => {
+        if (code === 0) res.status(200).json({ status: 'success' });
+        else res.status(500).json({ status: 'error', message: 'Échec mise à jour' });
+    });
 };
