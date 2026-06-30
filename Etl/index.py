@@ -1,33 +1,28 @@
 import os
 import re
-from dotenv import load_dotenv
+import sys
 import sqlite3
-import os
 from dotenv import load_dotenv
 
-# Charger le .env dès le départ, avant les imports locaux
+# Charger le .env
 base_dir = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(dotenv_path=os.path.join(base_dir, ".env"))
 
-# Ensuite, importez vos modules
+# Importez vos modules
 from etl.extract import recuperer_donnees
-
-
 from etl.transform import calculer_indicateurs
-from etl.load import creer_tables_datalake, sauvegarder_resultats, charger_raw_capteur, copier_csv_vers_traite
+from etl.load import (
+    creer_tables_datalake, sauvegarder_resultats,
+    charger_raw_capteur, copier_csv_vers_traite, update_nuit_in_db
+)
+
 
 def get_ids_nuit_disponibles():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-
-    load_dotenv(dotenv_path=os.path.join(base_dir, ".env"))
     dossier_traite = os.path.join(base_dir, "raw", "traite")
-
     ids = []
-
     if not os.path.exists(dossier_traite):
         print(f"Dossier {dossier_traite} introuvable.")
         return []
-
     for nom in sorted(os.listdir(dossier_traite)):
         match = re.search(r"nuit-(\d+)\.csv$", nom)
         if match:
@@ -35,18 +30,14 @@ def get_ids_nuit_disponibles():
     return ids
 
 
-
 def get_ids_nuit_deja_traites():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(base_dir, "datalake.db")
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    # Sélection de la table curated_nuit
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='curated_nuit'")
     if not cursor.fetchone():
         conn.close()
         return set()
-    # Choppe les ids des nuits déja traités
     cursor.execute("SELECT DISTINCT id_nuit FROM curated_nuit")
     ids = {row[0] for row in cursor.fetchall()}
     conn.close()
@@ -54,13 +45,12 @@ def get_ids_nuit_deja_traites():
 
 
 def run_pipeline(id_nuit):
-    queries_response: dict = recuperer_donnees(id_nuit)
+    print(f"--- Pipeline nuit {id_nuit} ---")
+    queries_response = recuperer_donnees(id_nuit)
     df_capteur = queries_response['df_capteur']
-    print(f"Étape 1 : Extraction :\n    {len(df_capteur)} lignes lues dans le CSV.\n    {queries_response['nbr_events'][0]} événements dans la base MySQL.")
 
-    print("Étape 2 : Calcul des indicateurs...")
     indicateurs = calculer_indicateurs(
-        queries_response['df_capteur'],
+        df_capteur,
         queries_response['df_events'],
         queries_response['nbapnees'],
         queries_response['nbhypopnees'],
@@ -68,26 +58,29 @@ def run_pipeline(id_nuit):
         queries_response['nbr_events']
     )
 
-    print("Étape 3 : Sauvegarde dans le Datalake...")
     charger_raw_capteur(df_capteur, id_nuit)
     sauvegarder_resultats(indicateurs, id_nuit, df_capteur)
-
-    print("Étape 4 : Archivage du CSV brut...")
     copier_csv_vers_traite(id_nuit)
+    print(f"Pipeline nuit {id_nuit} terminé.")
 
-creer_tables_datalake()
 
-ids_disponibles = get_ids_nuit_disponibles()
-ids_traites = get_ids_nuit_deja_traites()
+if __name__ == "__main__":
+    creer_tables_datalake()
 
-print(f"Nuits disponibles : {ids_disponibles}")
-print(f"Nuits déjà dans le datalake : {sorted(ids_traites)}\n")
 
-# run la pipeline pour chaque nuit disponible
-for id_nuit in ids_disponibles:
+    if len(sys.argv) > 1:
+        mode = sys.argv[1]
+        if mode == "update":
+            # Usage: python index.py update <commentaire> <id_medecin> <id_nuit>
+            try:
+                update_nuit_in_db(sys.argv[4], sys.argv[2], sys.argv[3])
+            except Exception as e:
+                print(f"Erreur update : {e}")
+        else:
 
-    print(f"--- Pipeline nuit {id_nuit} ---")
-    run_pipeline(id_nuit)
-    print()
+            run_pipeline(int(mode))
+    else:
 
-print("Pipeline terminé.")
+        ids_disponibles = get_ids_nuit_disponibles()
+        for id_nuit in ids_disponibles:
+            run_pipeline(id_nuit)
