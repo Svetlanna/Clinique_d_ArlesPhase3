@@ -1,0 +1,33 @@
+<div class="shell">
+  <app-sidebar></app-sidebar>
+
+  <div class="main">
+    <div class="topbar">
+      <span class="page-title">Résultats nuit</span>
+    </div>
+
+    <div class="content">
+      @for (nuit of nuits; track nuit.numero) {
+        <div class="card nuit-card">
+          <div class="card-hd">
+            <span class="card-hd-title">Nuit {{ nuit.numero }}</span>
+          </div>
+          <div class="nuit-graphs">
+            <figure>
+              <figcaption>SpO2</figcaption>
+              <img [src]="nuit.spo2" [alt]="'Courbe SpO2 - Nuit ' + nuit.numero" />
+            </figure>
+            <figure>
+              <figcaption>Débit nasal</figcaption>
+              <img [src]="nuit.debitNasal" [alt]="'Courbe débit nasal - Nuit ' + nuit.numero" />
+            </figure>
+            <figure>
+              <figcaption>Ronflements</figcaption>
+              <img [src]="nuit.ronflements" [alt]="'Ronflements - Nuit ' + nuit.numero" />
+            </figure>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

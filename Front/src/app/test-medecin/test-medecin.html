@@ -1,0 +1,30 @@
+<div class="shell">
+  <app-sidebar></app-sidebar>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="page-badge"><i class="ti ti-stethoscope"></i> Médecin</span>
+        <span class="page-title">Espace Médecin — Test</span>
+      </div>
+      <div class="topbar-right">
+        <span class="user-chip">
+          <i class="ti ti-user-circle"></i>
+          {{ user()?.mail }}
+        </span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="section-banner banner-medecin">
+        <i class="ti ti-shield-check"></i>
+        <div>
+          <strong>Accès réservé — Médecin</strong>
+          <p>Cette page est uniquement accessible aux utilisateurs de rôle <code>medecin</code> et <code>admin</code>.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
