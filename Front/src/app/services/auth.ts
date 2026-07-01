@@ -1,22 +1,15 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
-import { LocalService } from './local';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  nuits = signal<any[]>([]);
+  // Centralized state
   currentUser = signal<any | null>(null);
   appareils = signal<any | null>(null);
   medecines = signal<any | null>(null);
-
-  constructor(private http: HttpClient, private localService: LocalService) {
-    const mail = localService.getToken('auth_token');
-    const role = localService.getToken('auth_role');
-    if (mail) {
-      this.currentUser.set({ mail, role });
-    }
-  }
+  
+  constructor(private http: HttpClient) {}
 
   login(data: any) {
     return this.http
@@ -35,18 +28,6 @@ export class AuthService {
       .get<any>('http://localhost:3000/api/med')
       .pipe(tap((reponse) => this.medecines.set(reponse.data)));
   }
-
-  fetchNuits() {
-    return this.http
-      .get<any>('http://localhost:3000/api/nuit')
-      .pipe(tap((reponse) => this.nuits.set(reponse.data)));
-  }
-
-  updateCommentaire(idNuit: number, commentaire: string) {
-    return this.http
-      .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, { commentaire });
-  }
-
   logout() {
     this.currentUser.set(null);
   }

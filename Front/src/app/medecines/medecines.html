@@ -1,0 +1,46 @@
+<div class="shell">
+  <app-sidebar></app-sidebar>
+
+  <div class="main">
+    <div class="content">
+      <div class="card">
+        <div class="card-hd">
+          <small class="card-hd-title">Liste des médecins ({{ medecines()?.length || 0 }})</small>
+        </div>
+
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:5%">ID</th>
+              <th style="width:20%">Nom</th>
+              <th style="width:20%">Spécialité</th>
+              <th style="width:20%">Email</th>
+              <th style="width:15%">N° RPPS</th>
+              <th style="width:20%">Date d'embauche</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (medecines()) {
+              @for (m of medecines(); track m.id_personnel) {
+                <tr>
+                  <td>{{ m.id_personnel }}</td>
+                  <td>{{ m.prenom }} {{ m.nom }}</td>
+                  <td>{{ m.specialite }}</td>
+                  <td>{{ m.email }}</td>
+                  <td>{{ m.numero_rpps }}</td>
+                  <td>{{ m.date_embauche | date:'dd/MM/yyyy' }}</td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="6" style="text-align:center;padding:24px;color:var(--text-tertiary)">
+                  Chargement...
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
