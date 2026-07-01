@@ -139,7 +139,9 @@ def extract_donnees(id_patient : int, id_appareil : int):
 
 
 def init_db():
-    conn = sqlite3.connect("base_analytique.db")
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    chemin_db = os.path.join(base_dir, "etl2","base_analytique.db")
+    conn = sqlite3.connect(chemin_db)
     cur = conn.cursor()
     cur.execute(f"""
         CREATE TABLE IF NOT EXISTS faits_suivi_cpap_jour (
