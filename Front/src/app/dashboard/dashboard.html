@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
+
 <div class="shell">
   <app-sidebar></app-sidebar>
 
@@ -8,34 +10,11 @@
         <button class="icon-btn" aria-label="Recherche"><i class="ti ti-search"></i></button>
         <button class="icon-btn" aria-label="Aide"><i class="ti ti-help-circle"></i></button>
         <div class="avatar" style="width:34px;height:34px;font-size:12px">
-          {{ user()?.mail?.substring(0,2)?.toUpperCase() || '?' }}
+          {{ user()?.data?.login?.substring(0,2)?.toUpperCase() || 'JL' }}
         </div>
       </div>
     </div>
 
-    <div class="content">
-      <div class="metrics">
-        <div class="metric">
-          <div class="metric-label"><i class="ti ti-coin" style="font-size:14px"></i>Revenus</div>
-          <div class="metric-val">91 400 €</div>
-          <div class="metric-delta up">↑ 14,2 % ce mois</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label"><i class="ti ti-shopping-bag" style="font-size:14px"></i>Commandes</div>
-          <div class="metric-val">2 348</div>
-          <div class="metric-delta up">↑ 8,7 %</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label"><i class="ti ti-users" style="font-size:14px"></i>Utilisateurs actifs</div>
-          <div class="metric-val">18 921</div>
-          <div class="metric-delta up">↑ 3,1 %</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label"><i class="ti ti-receipt-refund" style="font-size:14px"></i>Taux de remb.</div>
-          <div class="metric-val">2,4 %</div>
-          <div class="metric-delta down">↑ 0,3 %</div>
-        </div>
-      </div>
 
       <div class="row2">
         <div class="card">

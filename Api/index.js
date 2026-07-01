@@ -9,15 +9,13 @@ import { medecineRoute } from "./controllers/medecineController.js";
 
 import authRoutes from './routes/authRoutes.js';
 
-
-
 const app = express();
 
 app.use(cors({ origin: 'http://localhost:4200' }));
 app.use(express.json());
 
 app.use('/api/nuit', nuitRoutes);
-app.use('/api/med', medecineRoute);
+app.use('/api/med', MedecinsRoute);
 app.use('/api/appareil', appareilRoutes);
 app.use('/api/analytique', analytiqueRoutes);
 

@@ -6,7 +6,7 @@ export const login = async (req, res) => {
     if (!login || !password) {
         return res.status(400).json({ status: 'error', message: 'Champs requis manquants' });
     }
-    
+
 
     try {
         // La requête est correcte pour votre structure de table actuelle
@@ -26,7 +26,7 @@ export const login = async (req, res) => {
             return res.status(401).json({ status: 'error', message: 'Identifiants invalides' });
         }
 
-        // Succès : on renvoie le login et le rôle
+        // Succès : on renvoie le mail et le rôle
         res.json({
             data: {
                 mail: user.login,

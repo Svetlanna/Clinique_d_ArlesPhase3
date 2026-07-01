@@ -7,7 +7,7 @@ const TOKEN_KEY = 'auth_token';
 @Injectable({ providedIn: 'root' })
 export class LocalService {
     constructor(private router: Router) { }
-    
+
     estConnecte = signal<boolean>(localStorage.getItem(TOKEN_KEY) !== null);
 
     login(token: string) {
