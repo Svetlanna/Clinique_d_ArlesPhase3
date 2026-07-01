@@ -21,11 +21,11 @@ load_dotenv(dotenv_path=os.path.join(base_dir, ".env"))
 def update_nuit_in_db(id_nuit, commentaire, id_medecin):
     try:
         conn = mysql.connector.connect(
-            host=os.environ.get("DB_HOST", "localhost"),
-            port=int(os.environ.get("DB_PORT", 3333)),
-            user=os.environ.get("DB_USER", "root"),
-            password=os.environ.get("DB_PASSWORD", "root"),
-            database=os.environ.get("DB_NAME", "cliniquearles")
+            host=os.environ.get("DB_HOST"),
+            port=os.environ.get("DB_PORT"),
+            user=os.environ.get("DB_USER"),
+            password=os.environ.get("DB_PASSWORD"),
+            database=os.environ.get("DB_NAME")
         )
         cursor = conn.cursor()
 
