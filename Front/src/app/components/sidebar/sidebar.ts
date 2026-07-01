@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
@@ -15,7 +15,7 @@ export class SidebarComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   protected readonly title = signal('CliniquePlus');
-
+  userRole = computed(() => this.user()?.role);
   user = this.authService.currentUser;
 
   logout() {

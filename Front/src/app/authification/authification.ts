@@ -23,10 +23,10 @@ export class Authification {
     private router: Router,
   ) {
     // authification.ts
-    this.loginForm = this.fb.group({
-      login: ['', [Validators.required, Validators.email]],
-      mot_de_passe: ['', [Validators.required, Validators.minLength(6)]],
-    });
+ this.loginForm = this.fb.group({
+  login: ['', [Validators.required, Validators.email]],
+  password: ['', [Validators.required, Validators.minLength(6)]], // Modifié ici
+});
   }
 
   onSubmit() {
@@ -39,10 +39,10 @@ export class Authification {
 
           if (role === 'admin') {
             this.router.navigate(['/admin']);
-          } else if (role === 'medecin') {
-            this.router.navigate(['/dashboard']);
-          } else if (role === 'operateur') {
-            this.router.navigate(['/operateur']);
+            // } else if (role === 'medecin') {
+            //    this.router.navigate(['/dashboard']);
+            //  } else if (role === 'operateur') {
+            //    this.router.navigate(['/operateur']);
           } else {
             this.router.navigate(['/dashboard']);
           }

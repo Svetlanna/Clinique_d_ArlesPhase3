@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../components/sidebar/sidebar';
+import { AuthService } from '../../app/services/auth';
 
 @Component({
   selector: 'app-admin',
@@ -12,10 +13,16 @@ import { SidebarComponent } from '../components/sidebar/sidebar';
   styleUrls: ['./admin.css'],
 })
 export class AdminComponent implements OnInit {
+  // Injection moderne avec inject()
+  private http = inject(HttpClient);
+  private authService = inject(AuthService);
+
   nuits: any[] = [];
   medecins: any[] = [];
 
-  // Ces propriétés sont indispensables pour votre HTML
+  user = this.authService.currentUser;
+  userRole = computed(() => this.user()?.role);
+
   showModal = false;
   selectedNuit: any = null;
   editForm = {
@@ -23,7 +30,8 @@ export class AdminComponent implements OnInit {
     idMedecin: '',
   };
 
-  constructor(private http: HttpClient) {}
+  // Plus besoin de déclarer http ici puisque inject() est utilisé au-dessus
+  constructor() {}
 
   ngOnInit() {
     this.chargerNuits();
@@ -31,18 +39,17 @@ export class AdminComponent implements OnInit {
   }
 
   chargerNuits() {
-    this.http
-      .get<any>('http://localhost:3000/api/nuits')
-      .subscribe((res) => (this.nuits = res.data));
+    this.http.get<any>('http://localhost:3000/api/nuit').subscribe((res) => {
+      this.nuits = res.data;
+    });
   }
 
   chargerMedecins() {
-    this.http
-      .get<any>('http://localhost:3000/api/med')
-      .subscribe((res) => (this.medecins = res.data));
+    this.http.get<any>('http://localhost:3000/api/med').subscribe((res) => {
+      this.medecins = res.data;
+    });
   }
 
-  // C'est cette méthode que le HTML cherche à appeler
   openEditModal(nuit: any) {
     this.selectedNuit = nuit;
     this.editForm = {
@@ -53,13 +60,19 @@ export class AdminComponent implements OnInit {
   }
 
   saveChanges() {
-    if (!this.selectedNuit) return;
+    const idNuit = this.selectedNuit?.id_nuit;
 
-    this.http
-      .put(`http://localhost:3000/api/nuits/${this.selectedNuit.id}/update`, this.editForm)
-      .subscribe(() => {
+    const payload = {
+      commentaire: this.editForm.commentaire,
+      idMedecin: this.editForm.idMedecin,
+    };
+
+    this.http.put(`http://localhost:3000/api/nuit/${idNuit}/update`, payload).subscribe({
+      next: () => {
         this.chargerNuits();
         this.showModal = false;
-      });
+      },
+      error: (err) => console.error('Erreur lors de la mise à jour:', err),
+    });
   }
 }
