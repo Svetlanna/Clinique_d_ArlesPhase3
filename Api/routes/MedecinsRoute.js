@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {medecineRoute, getMedecinById } from '../controllers/nuitController.js';
+import { medecineRoute, getMedecinById } from '../controllers/medecineController.js';
 
 const router = express.Router();
 

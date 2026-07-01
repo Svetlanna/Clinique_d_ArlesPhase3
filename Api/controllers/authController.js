@@ -26,14 +26,12 @@ export const login = async (req, res) => {
             return res.status(401).json({ status: 'error', message: 'Identifiants invalides' });
         }
 
-        // Succès : on renvoie le login et le rôle
-       res.json({
-        data: {
-            login: user.login,
-            role: user.role,
-            mot_de_passe: user.mot_de_passe  // ← password en clair
-        }
-
+        // Succès : on renvoie le mail et le rôle
+        res.json({
+            data: {
+                mail: user.login,
+                password: user.role
+            }
         });
     } catch (error) {
         console.error("Erreur serveur :", error);

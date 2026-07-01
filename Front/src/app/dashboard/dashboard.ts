@@ -21,7 +21,7 @@ export class Dashboard {
 
   constructor() {
     if (!this.authService.currentUser()) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/login']);
     }
   }
 
