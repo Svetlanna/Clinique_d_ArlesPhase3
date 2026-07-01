@@ -6,7 +6,7 @@ export const login = async (req, res) => {
     if (!login || !password) {
         return res.status(400).json({ status: 'error', message: 'Champs requis manquants' });
     }
-    
+
 
     try {
         // La requête est correcte pour votre structure de table actuelle
@@ -27,11 +27,13 @@ export const login = async (req, res) => {
         }
 
         // Succès : on renvoie le login et le rôle
-        res.json({
-            data: {
-                mail: user.login,
-                password: user.role
-            }
+       res.json({
+        data: {
+            login: user.login,
+            role: user.role,
+            mot_de_passe: user.mot_de_passe  // ← password en clair
+        }
+
         });
     } catch (error) {
         console.error("Erreur serveur :", error);
