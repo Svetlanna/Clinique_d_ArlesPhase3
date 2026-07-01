@@ -1,5 +1,14 @@
 import * as NuitModel from '../models/nuitModel.js';
 import { pool } from '../config/db.js';
+import { spawn } from 'child_process';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Définition des chemins globaux (sûr pour ES Modules)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 export const runNuit = async (req, res) => {
     try {
         const data = await NuitModel.fetchNuitData(req.params.id);
@@ -9,23 +18,20 @@ export const runNuit = async (req, res) => {
     }
 };
 
-
-
-
 export const getAllNuitEtude = async (req, res) => {
     try {
-        // Interroge la vue v_nuit_etude présente dans image_db7f18.jpg
         const [rows] = await pool.query('SELECT * FROM v_nuit_etude');
         res.status(200).json({ status: 'success', count: rows.length, data: rows });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }
 };
+
 // Mettre à jour le commentaire
 export const updateCommentaire = async (req, res) => {
     const { id } = req.params;
     const { commentaire } = req.body;
-    await pool.execute('UPDATE nuit_etude SET commentaire_medical = ? WHERE id_nuit = ?', [commentaire, id]);
+    await pool.execute('UPDATE nuit_etude SET notes_techniques = ? WHERE id_nuit = ?', [commentaire, id]);
     res.status(200).json({ status: 'success' });
 };
 
@@ -108,16 +114,41 @@ export const getMedecinById = async (req, res) => {
         res.status(500).json({ status: 'error', message: error.message });
     }
 };
+
+
 export const updateNuit = async (req, res) => {
     const { id } = req.params;
     const { commentaire, idMedecin } = req.body;
 
-    const spawn = require("child_process").spawn;
-    // L'ordre ici doit correspondre au sys.argv du script Python
-    const pythonProcess = spawn('python', ["./index.py", "update", commentaire, idMedecin, id]);
+    const scriptPath = path.join(__dirname, "..", "..", "Etl", "index.py");
+    const args = [
+        scriptPath,
+        "update",
+        String(commentaire || ""),
+        String(idMedecin || ""),
+        String(id)
+    ];
+
+const pythonExecutable = process.env.PYTHON_PATH || "python";
+const pythonProcess = spawn(pythonExecutable, args);
+    let errorOutput = '';
+
+    pythonProcess.stderr.on('data', (data) => {
+        errorOutput += data.toString();
+        console.error(`ERREUR PYTHON : ${data}`);
+    });
 
     pythonProcess.on('close', (code) => {
-        if (code === 0) res.status(200).json({ status: 'success' });
-        else res.status(500).json({ status: 'error', message: 'Échec mise à jour' });
+        if (code === 0) {
+            // Succès
+            res.status(200).json({ status: 'success', message: 'Mise à jour effectuée' });
+        } else {
+            // En cas d'erreur côté Python, on renvoie les détails
+            res.status(500).json({
+                status: 'error',
+                message: 'Erreur exécution Python',
+                details: errorOutput
+            });
+        }
     });
 };
