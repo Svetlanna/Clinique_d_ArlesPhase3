@@ -10,14 +10,14 @@ const pool = mysql.createPool({
     user: process.env.DB_USER || 'root',
     port: process.env.DB_PORT || 3333,
     password: process.env.DB_PASSWORD || 'root',
-    database: process.env.DB_NAME || "cliniquearles",
+    database: process.env.DB_NAME || "clinique2nuitsv2",
     waitForConnections: true,
     connectionLimit: 10
 });
 
 export async function recupererDonnees(idNuit) {
 
-    const baseDir = 'C:/python-projs/Clinique_d_ArlesPhase3/Api';
+    const baseDir = 'C:/python-projs/Clinique_d_Arles/server';
 
     const cheminCsv = path.join(baseDir, "raw", "traite", `signal-psg-patient-${idNuit}-nuit-${idNuit}.csv`);
 
