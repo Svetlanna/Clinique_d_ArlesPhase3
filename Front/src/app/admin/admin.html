@@ -17,15 +17,22 @@
               <th>Médecin</th>
               <th>Type</th>
               <th>Équipement</th>
+              <th>Motif prescription</th>
+              <th>Note</th>
               <th class="actions-col">Actions</th>
             </tr>
           </thead>
-          <tbody>
+       <tbody><!--   <td>{{ nuits|json }}</td>-->
             <tr *ngFor="let nuit of nuits">
+
+
               <td>{{ nuit.date_nuit | date:'dd/MM/yyyy' }}</td>
               <td>{{ nuit.nom_patient }}</td>
-              <td>{{ nuit.nom_medecin || 'Non assigné' }}</td>
+              <td>{{ nuit.nom_medecin }}</td>
               <td>{{ nuit.type_etude }}</td>
+              <td>{{ nuit.equipement}}</td>
+              <td>{{ nuit.motif_prescription }}</td>
+
               <td>{{ nuit.notes_techniques }}</td>
               <td>
                 <button (click)="openEditModal(nuit)">Modifier</button>

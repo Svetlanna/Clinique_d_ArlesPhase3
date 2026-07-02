@@ -1,5 +1,5 @@
-import * as NuitModel from '../models/nuitModel.js';
-import { pool } from '../config/db.js';
+import * as NuitModel from '../../../Api/models/nuitModel.js';
+import { pool } from '../../../Api/config/db.js';
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';

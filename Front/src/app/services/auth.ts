@@ -20,12 +20,11 @@ export class AuthService {
       this.currentUser.set({ mail, role });
     }
   }
- login(data: any) {
-  const payload = {
-    login: data.login,
-    password: data.password, // Modifié ici : on prend data.password directement
-  };
-
+  login(data: any) {
+    const payload = {
+      login: data.login,
+      password: data.password, // Modifié ici : on prend data.password directement
+    };
 
     console.log('Payload envoyé:', payload); // vérifie dans la console
 

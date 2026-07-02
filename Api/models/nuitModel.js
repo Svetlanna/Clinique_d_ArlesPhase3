@@ -8,6 +8,12 @@ import { recupererDonnees } from '../etl/extract.js';
 
 import { calculerIndicateurs } from '../etl/transform.js';
 
+
+export const fetchAllNuitEtude = async () => {
+    const [rows] = await pool.query('SELECT * FROM v_nuit_etude');
+    return rows;
+};
+
 export const fetchNuitData = async (idNuit) => {
     // 1. Lecture CSV
 
