@@ -1,0 +1,23 @@
+<div class="shell">
+  <app-sidebar></app-sidebar>
+
+  <div class="main">
+    <div class="content">
+
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-hd">
+          <small class="card-hd-title">Filtrer par médecin</small>
+        </div>
+        <select name="aaa" id="select-medecin">
+          <option value="">-- Veuillez choisir --</option>
+          @for(medecin of medecines(); track medecin.id_personnel) {
+            <option [value]="medecin.id_personnel">{{ medecin.prenom }} {{ medecin.nom }}</option>
+          } @empty {
+            <option disabled>Aucun médecin disponible</option>
+          }
+        </select>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
+          <small class="card-hd-title">Nuits réalisées ({{ nuits().length }})</small>

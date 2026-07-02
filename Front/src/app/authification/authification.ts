@@ -13,36 +13,36 @@ import { AuthService } from '../services/auth';
 })
 export class Authification {
   protected readonly title = signal('CliniquePlus');
+
   message: string = '';
   loginForm: FormGroup;
-  user = signal<any | null>(null);
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
+    protected authService: AuthService,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
-      // Renommé 'mail' en 'login' pour correspondre à la colonne SQL
-      login: ['', [Validators.required,Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(3)]],
+      login: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(5)]]
     });
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
-        next: (reponse: any) => {
-          // On accède à 'reponse.data' pour récupérer l'objet utilisateur
-          if (reponse && reponse.data) {
-            this.user.set(reponse.data);
-            this.router.navigate(['/dashboard']);
-          }
+        next: () => {
+          this.router.navigate(['/dashboard']);
         },
-        error: (erreur) => {
+        error: () => {
           this.message = 'Connexion refusée !';
-        },
+        }
       });
     }
+  }
+
+  fillCredentials(login: string, password: string) {
+    this.loginForm.setValue({ login, password });
+    this.message = '';
   }
 }
