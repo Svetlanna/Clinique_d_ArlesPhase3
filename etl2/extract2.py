@@ -4,12 +4,12 @@ from dotenv import load_dotenv
 import os
 import mysql.connector
 import re
-
+from pathlib import Path
 
 
 def init_db():
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    chemin_db = os.path.join(base_dir, "etl2","base_analytique.db")
+    base_dir = Path(__file__).resolve().parent.parent
+    chemin_db = base_dir / "base_analytique.db"
     conn = sqlite3.connect(chemin_db)
     cur = conn.cursor()
     cur.execute(f"""
