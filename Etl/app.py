@@ -53,18 +53,22 @@ def get_conn():
         database=os.environ.get("DB_NAME", "cliniquearles"),
     )
 
+
 def query(sql, params=None):
     conn = get_conn()
     return pd.read_sql(sql, conn, params=params)
 
 
-
 USERS = {
-    "thomas.estrii@clinique-sommeil-arles.fr":    {"password": "medecin1", "role": "medecin",   "id": 1,  "nom": "Dr Estri Thomas"},
-    "isabelle.faure@clinique-sommeil-arles.fr":   {"password": "medecin2", "role": "medecin",   "id": 2,  "nom": "Dr Faure Isabelle"},
-    "nathalie.roux@clinique-sommeil-arles.fr":    {"password": "infirmier1","role": "infirmier", "id": 8,  "nom": "Roux Nathalie"},
-    "sophie.martin@clinique-sommeil-arles.fr":    {"password": "infirmier2","role": "infirmier", "id": 9,  "nom": "Martin Sophie"},
-    "admin@clinique-sommeil-arles.fr":            {"password": "admin2024", "role": "admin",     "id": None,"nom": "Administrateur"},
+    "thomas.estrii@clinique-sommeil-arles.fr": {"password": "medecin1", "role": "medecin", "id": 1,
+                                                "nom": "Dr Estri Thomas"},
+    "isabelle.faure@clinique-sommeil-arles.fr": {"password": "medecin2", "role": "medecin", "id": 2,
+                                                 "nom": "Dr Faure Isabelle"},
+    "nathalie.roux@clinique-sommeil-arles.fr": {"password": "infirmier1", "role": "infirmier", "id": 8,
+                                                "nom": "Roux Nathalie"},
+    "sophie.martin@clinique-sommeil-arles.fr": {"password": "infirmier2", "role": "infirmier", "id": 9,
+                                                "nom": "Martin Sophie"},
+    "admin@clinique-sommeil-arles.fr": {"password": "admin2024", "role": "admin", "id": None, "nom": "Administrateur"},
 }
 
 
@@ -75,14 +79,14 @@ def show_login():
     st.markdown("Connexion au portail médical")
     st.markdown("---")
     email = st.text_input("Email professionnel", placeholder="prenom.nom@clinique-sommeil-arles.fr")
-    pwd   = st.text_input("Mot de passe", type="password")
+    pwd = st.text_input("Mot de passe", type="password")
     if st.button("Se connecter", use_container_width=True):
         user = USERS.get(email)
         if user and user["password"] == pwd:
             st.session_state.authenticated = True
-            st.session_state.role          = user["role"]
-            st.session_state.user_nom      = user["nom"]
-            st.session_state.user_id       = user["id"]
+            st.session_state.role = user["role"]
+            st.session_state.user_nom = user["nom"]
+            st.session_state.user_id = user["id"]
             st.rerun()
         else:
             st.error("Email ou mot de passe incorrect.")
@@ -99,6 +103,7 @@ def iah_badge(iah):
     if iah < 15:  return f'<span class="badge badge-orange">Léger ({iah:.1f})</span>'
     if iah < 30:  return f'<span class="badge badge-red">Modéré ({iah:.1f})</span>'
     return f'<span class="badge badge-red">⚠ Sévère ({iah:.1f})</span>'
+
 
 def spo2_badge(v):
     if v is None: return ""
@@ -180,7 +185,8 @@ def page_nuits():
     sel_nuit = st.selectbox(
         "Nuit",
         df_ids["id_nuit"].tolist(),
-        format_func=lambda x: f"Nuit {x} — {df_ids[df_ids['id_nuit']==x]['patient'].values[0]} ({df_ids[df_ids['id_nuit']==x]['date_nuit'].values[0]})"
+        format_func=lambda
+            x: f"Nuit {x} — {df_ids[df_ids['id_nuit'] == x]['patient'].values[0]} ({df_ids[df_ids['id_nuit'] == x]['date_nuit'].values[0]})"
     )
 
     df_ev = query("""
@@ -191,9 +197,9 @@ def page_nuits():
     st.markdown(f"**{len(df_ev)} événements respiratoires**")
     if not df_ev.empty:
         c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Apnées",     int((df_ev["type_evenement"].str.contains("apn")).sum()))
-        c2.metric("Hypopnées",  int((df_ev["type_evenement"]=="hypopnée").sum()))
-        c3.metric("RERA",       int((df_ev["type_evenement"]=="RERA").sum()))
+        c1.metric("Apnées", int((df_ev["type_evenement"].str.contains("apn")).sum()))
+        c2.metric("Hypopnées", int((df_ev["type_evenement"] == "hypopnée").sum()))
+        c3.metric("RERA", int((df_ev["type_evenement"] == "RERA").sum()))
         c4.metric("Durée moy.", f"{df_ev['duree_sec'].mean():.0f} s")
         st.dataframe(df_ev, hide_index=True, use_container_width=True)
 
@@ -254,14 +260,14 @@ def page_resultats():
 
             st.markdown("---")
             c1, c2, c3, c4 = st.columns(4)
-            c1.metric("RERA",           int(r['nb_rera']))
-            c2.metric("Micro-éveils",   int(r['nb_microeveils']))
-            c3.metric("Position",       str(r['position_dominante']))
+            c1.metric("RERA", int(r['nb_rera']))
+            c2.metric("Micro-éveils", int(r['nb_microeveils']))
+            c3.metric("Position", str(r['position_dominante']))
             c4.metric("Ronflements >70dB", int(r['nb_ronflements_forts']))
-            c1.metric("SpO₂ moyenne",   f"{float(r['spo2_moy']):.1f}%")
-            c2.metric("SpO₂ médiane",   f"{float(r['spo2_mediane']):.1f}%")
-            c3.metric("Déc. max",       f"{float(r['decibels_max']):.0f} dB")
-            c4.metric("Déc. moyen",     f"{float(r['decibels_moy']):.1f} dB")
+            c1.metric("SpO₂ moyenne", f"{float(r['spo2_moy']):.1f}%")
+            c2.metric("SpO₂ médiane", f"{float(r['spo2_mediane']):.1f}%")
+            c3.metric("Déc. max", f"{float(r['decibels_max']):.0f} dB")
+            c4.metric("Déc. moyen", f"{float(r['decibels_moy']):.1f} dB")
 
             if r['commentaire_medical']:
                 st.markdown(f"**Commentaire médical :** {r['commentaire_medical']}")
@@ -284,7 +290,8 @@ def page_appareils():
         sub = df_psg[df_psg["statut"] == s]
         if not sub.empty:
             badge = "badge-green" if s == "actif" else "badge-orange" if s == "maintenance" else "badge-red"
-            st.markdown(f'<span class="badge {badge}">{s.upper()} — {len(sub)} appareils</span>', unsafe_allow_html=True)
+            st.markdown(f'<span class="badge {badge}">{s.upper()} — {len(sub)} appareils</span>',
+                        unsafe_allow_html=True)
     st.dataframe(df_psg.set_index("id_appareil"), use_container_width=True)
 
     st.markdown('<div class="section-header">Appareils CPAP</div>', unsafe_allow_html=True)
@@ -306,10 +313,10 @@ def page_vue_suivi():
     df = query("SELECT * FROM v_dernier_suivi")
     st.dataframe(df, hide_index=True, use_container_width=True)
 
-    st.markdown('<div class="section-header">Derniers événements respiratoires — vue v_derniers_event_respi</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">Derniers événements respiratoires — vue v_derniers_event_respi</div>',
+                unsafe_allow_html=True)
     df2 = query("SELECT * FROM v_derniers_event_respi")
     st.dataframe(df2, hide_index=True, use_container_width=True)
-
 
 
 def page_outputs():
@@ -347,7 +354,9 @@ def page_outputs():
                 break
             except UnicodeDecodeError:
                 continue
-        st.markdown(f'<div style="background:#161b22;border:1px solid #21262d;border-left:3px solid #58a6ff;border-radius:8px;padding:1rem 1.4rem;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;color:#c9d1d9">{rapport}</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div style="background:#161b22;border:1px solid #21262d;border-left:3px solid #58a6ff;border-radius:8px;padding:1rem 1.4rem;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;color:#c9d1d9">{rapport}</div>',
+            unsafe_allow_html=True)
         st.download_button("⬇ Télécharger le rapport", data=rapport,
                            file_name=f"rapport_medecin_nuit_{sel}.txt", mime="text/plain")
 
@@ -378,6 +387,7 @@ def page_outputs():
             fpath = os.path.join(output_dir, f)
             size = os.path.getsize(fpath)
             st.text(f"{f}  ({size:,} octets)")
+
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 if "authenticated" not in st.session_state:
@@ -437,3 +447,4 @@ except mysql.connector.Error as e:
     if st.button("Réessayer"):
         st.cache_resource.clear()
         st.rerun()
+
