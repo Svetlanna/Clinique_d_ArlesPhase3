@@ -13,8 +13,9 @@ from pathlib import Path
 import mysql.connector
 import sqlite3
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SQLITE_PATH = BASE_DIR / "base_analytique.db"
+print(SQLITE_PATH)
 NUITS_DIR = BASE_DIR / "nuits"
 
 
