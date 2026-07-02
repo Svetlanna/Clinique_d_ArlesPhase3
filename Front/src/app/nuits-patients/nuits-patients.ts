@@ -18,6 +18,7 @@ export class NuitsPatients implements OnInit {
   nuits = this.authService.nuits;
   commentaire = signal('');
   identifier = signal(0);
+  popUp = signal(false)
 
   ngOnInit() {
     this.authService.fetchMedecines().subscribe({
@@ -32,8 +33,9 @@ export class NuitsPatients implements OnInit {
 
   enregistrer() {
     this.authService.updateCommentaire(this.identifier(), this.commentaire()).subscribe({
-      next: () => console.log('Commentaire enregistré'),
+      next: () => (this.popUp.set(true),console.log('Commentaire enregistré'), setTimeout(() => {this.popUp.set(false);}, 3000)),
       error: (err: any) => console.error('Erreur:', err),
+      
     });
   }
 }

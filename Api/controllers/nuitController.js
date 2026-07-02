@@ -27,12 +27,25 @@ export const getAllNuitEtude = async (req, res) => {
     }
 };
 
+export const getAllNuits = async (req, res) => {
+    try {
+        const nuits = await NuitModel.getAllNuits();
+        res.status(200).json({ status: 'success', data: nuits });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
+
 // Mettre à jour le commentaire
 export const updateCommentaire = async (req, res) => {
-    const { id } = req.params;
-    const { commentaire } = req.body;
-    await pool.execute('UPDATE nuit_etude SET notes_techniques = ? WHERE id_nuit = ?', [commentaire, id]);
-    res.status(200).json({ status: 'success' });
+    try {
+        const idNuit = req.params.id;
+        const commentaire = req.body.commentaire;
+        await NuitModel.updateCommentaire(idNuit, commentaire);
+        res.status(200).json({ status: 'success', data: { idNuit, commentaire } });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
 };
 
 // Assigner un médecin

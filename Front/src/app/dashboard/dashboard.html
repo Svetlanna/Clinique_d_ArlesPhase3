@@ -10,7 +10,7 @@
         <button class="icon-btn" aria-label="Recherche"><i class="ti ti-search"></i></button>
         <button class="icon-btn" aria-label="Aide"><i class="ti ti-help-circle"></i></button>
         <div class="avatar" style="width:34px;height:34px;font-size:12px">
-          {{ user()?.data?.login?.substring(0,2)?.toUpperCase() || 'JL' }}
+          {{ user()?.mail?.substring(0,2)?.toUpperCase() || 'JL' }}
         </div>
       </div>
     </div>
@@ -195,4 +195,3 @@
 
     </div>
   </div>
-</div>

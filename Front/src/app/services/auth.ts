@@ -2,13 +2,13 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { LocalService } from './local';
-import { LocalService } from './local';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   currentUser = signal<any | null>(null);
   appareils = signal<any | null>(null);
   medecines = signal<any | null>(null);
+  nuits = signal<any[]>([]);
 
   constructor(private http: HttpClient, private localService: LocalService) {
     const mail = localService.getToken('auth_token');
@@ -20,15 +20,14 @@ export class AuthService {
 
   login(data: any) {
     return this.http
-      .post<any>('http://localhost:3000/auth/login', data)
-      .pipe(
-        tap((reponse) => {
-          const { mail, password: role } = reponse.data;
-          this.localService.login(mail);
-          this.localService.saveToken('auth_role', role);
-          this.currentUser.set({ mail, role });
-        })
-      );
+      .post('http://localhost:3000/auth/login', data)
+      .pipe(tap((response: any) => {
+        const mail = response.data.mail;
+        const role = response.data.password;
+        this.localService.login(mail);
+        this.localService.saveToken('auth_role', role);
+        this.currentUser.set({ mail, role });
+      }));
   }
 
   getAppareils() {
@@ -43,12 +42,23 @@ export class AuthService {
       .pipe(tap((reponse) => this.medecines.set(reponse.data)));
   }
 
+  fetchNuits() {
+    return this.http
+      .get<any>('http://localhost:3000/api/nuit')
+      .pipe(tap((reponse) => this.nuits.set(reponse.data)));
+  }
+
+  updateCommentaire(idNuit: number, commentaire: string) {
+    return this.http
+      .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, { commentaire });
+  }
+
   logout() {
     this.currentUser.set(null);
     this.localService.logout();
   }
 
   isLoggedIn(): boolean {
-    return this.localService.estConnecte();
+    return this.currentUser() !== null;
   }
 }
