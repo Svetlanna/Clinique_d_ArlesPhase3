@@ -1,38 +1,26 @@
-from extract2 import init_db
-from transform2 import transform_check_donnees
+from extract2 import conn, cur, load_export_1
+from transform2 import load_export_2
 
 
-conn = init_db()
-cur = conn.cursor()
-
-id_suivi_source = transform_check_donnees()
-id_patient = transform_check_donnees()
-id_temps = transform_check_donnees()
-id_suivi_le_plus_proche = transform_check_donnees()
-alerte_observance_insuffisante = transform_check_donnees()
-alerte_iah_elevee = transform_check_donnees()
-duree_utilisation_heures = transform_check_donnees()
-iah_residuel = transform_check_donnees()
-fuite_l_min = transform_check_donnees()
-nb_evenements = transform_check_donnees()
-qualite_donnee = transform_check_donnees()
-
-cur.execute("""
-            INSERT INTO faits_suivi_cpap_jour (
-                id_suivi_source, id_patient, id_temps, duree_utilisation_h, iah_residuel,
-                fuites_l_min, nb_evenements, qualite_donnee,
-                id_suivi_le_plus_proche, alerte_observance_insuffisante, alerte_iah_eleve
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            id_suivi_source,
-            id_patient,
-            id_temps,
-            duree_utilisation_heures,
-            iah_residuel,
-            fuite_l_min,
-            nb_evenements,
-            qualite_donnee,
-            id_suivi_le_plus_proche,
-            alerte_observance_insuffisante,
-            alerte_iah_elevee
-        ))
+for i in range (len(load_export_1)):
+    cur.execute("""
+                REPLACE INTO faits_suivi_cpap_jour (
+                    id_suivi_source, id_patient, id_temps, duree_utilisation_h, iah_residuel,
+                    fuites_l_min, nb_evenements, qualite_donnee,
+                    id_suivi_le_plus_proche, alerte_observance_insuffisante, alerte_iah_eleve
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                load_export_1[i]['id_suivi_source'],
+                load_export_1[i]['id_patient'],
+                load_export_1[i]['id_temps'],
+                load_export_1[i]['duree_utilisation'],
+                load_export_1[i]['iah_residuel'],
+                load_export_1[i]['fuite_l_min'],
+                load_export_1[i]['nb_evenements'],
+                load_export_1[i]['qualite_donnee'],
+                load_export_1[i]['id_suivi_le_plus_proche'],
+                load_export_2[i]['alerte_observance_insuffisante'],
+                load_export_2[i]['alerte_iah_elevee']
+            ))
+conn.commit()
+conn.close()
