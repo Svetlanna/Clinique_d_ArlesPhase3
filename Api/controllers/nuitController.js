@@ -1,5 +1,6 @@
 import * as NuitModel from '../models/nuitModel.js';
 import { pool } from '../config/db.js';
+
 export const runNuit = async (req, res) => {
     try {
         const data = await NuitModel.fetchNuitData(req.params.id);
@@ -26,7 +27,6 @@ export const getStats = async (req, res) => {
         res.status(500).json({ status: 'error', message: error.message });
     }
 };
-
 
 export const medecineRoute = async (req, res) => {
     try {
@@ -75,6 +75,26 @@ export const getMedecinById = async (req, res) => {
         `, [req.params.id]);
         if (!rows[0]) return res.status(404).json({ status: 'error', message: 'Médecin non trouvé' });
         res.status(200).json({ status: 'success', data: rows[0] });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
+
+export const getAllNuits = async (req, res) => {
+    try {
+        const nuits = await NuitModel.getAllNuits();
+        res.status(200).json({ status: 'success', data: nuits });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
+
+export const updateCommentaire = async (req, res) => {
+    try {
+        const idNuit = req.params.id;
+        const commentaire = req.body.commentaire;
+        const comment = await NuitModel.updateCommentaire(idNuit, commentaire);
+        res.status(200).json({ status: 'success', data: { idNuit, commentaire } });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }
