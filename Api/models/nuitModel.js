@@ -2,17 +2,24 @@ import fs from 'fs';
 import path from 'path';
 import csvParser from 'csv-parser';
 import { pool } from '../config/db.js';
-
-
 import { recupererDonnees } from '../etl/extract.js';
-
 import { calculerIndicateurs } from '../etl/transform.js';
 
-export const fetchNuitData = async (idNuit) => {
-    // 1. Lecture CSV
+export const getAllNuits = async () => {
+    const [rows] = await pool.execute('SELECT * FROM resultat_nuit');
+    return rows;
+};
 
+export const updateCommentaire = async (idNuit, commentaire) => {
+    await pool.execute(
+        'UPDATE resultat_nuit SET commentaire_medical = ? WHERE id_nuit = ?',
+        [commentaire, idNuit]
+    );
+};
+
+export const fetchNuitData = async (idNuit) => {
     const baseDir = 'C:/python-projs/Clinique_d_Arles/server';
-const cheminCsv = path.join(process.cwd(), "raw", "traite", `signal-psg-patient-${idNuit}-nuit-${idNuit}.csv`);
+    const cheminCsv = path.join(process.cwd(), "raw", "traite", `signal-psg-patient-${idNuit}-nuit-${idNuit}.csv`);
     const dfCapteur = await new Promise((resolve, reject) => {
         if (!fs.existsSync(cheminCsv)) return reject(new Error(`Fichier introuvable`));
         const results = [];
@@ -22,8 +29,6 @@ const cheminCsv = path.join(process.cwd(), "raw", "traite", `signal-psg-patient-
             .on('end', () => resolve(results))
             .on('error', reject);
     });
-
-    // 2. Accès SQL
     const [dfEvents] = await pool.execute('SELECT * FROM evenement_respiratoire WHERE id_nuit = ?', [idNuit]);
     const [apnees, hypo, rera, all] = await Promise.all([
         pool.query("CALL sp_compteur_apnees()"),
@@ -31,7 +36,6 @@ const cheminCsv = path.join(process.cwd(), "raw", "traite", `signal-psg-patient-
         pool.query("CALL sp_compteur_rera()"),
         pool.query("CALL sp_compteur_all()")
     ]);
-
     return {
         df_capteur: dfCapteur,
         df_events: dfEvents,

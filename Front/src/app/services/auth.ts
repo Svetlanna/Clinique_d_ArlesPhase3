@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { LocalService } from './local';
+import { LocalService } from './local';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

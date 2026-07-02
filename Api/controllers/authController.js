@@ -18,6 +18,9 @@ export const login = async (req, res) => {
         if (rows.length === 0) {
             return res.status(401).json({ status: 'error', message: 'Identifiants invalides' });
         }
+        if (rows.length === 0) {
+            return res.status(401).json({ status: 'error', message: 'Identifiants invalides' });
+        }
 
         const user = rows[0];
 

@@ -1,0 +1,77 @@
+<div class="shell">
+  <app-sidebar></app-sidebar>
+
+  <div class="main">
+    <div class="content">
+
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-hd">
+          <small class="card-hd-title">Filtrer par médecin</small>
+        </div>
+        <select name="aaa" id="select-medecin">
+          <option value="">-- Veuillez choisir --</option>
+          @for(medecin of medecines(); track medecin.id_personnel) {
+            <option [value]="medecin.id_personnel">{{ medecin.prenom }} {{ medecin.nom }}</option>
+          } @empty {
+            <option disabled>Aucun médecin disponible</option>
+          }
+        </select>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
+          <small class="card-hd-title">Nuits réalisées ({{ nuits().length }})</small>
+        </div>
+
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:5%">ID</th>
+              <th style="width:10%">Date</th>
+              <th style="width:8%">IAH</th>
+              <th style="width:10%">Sévérité</th>
+              <th style="width:8%">Apnées</th>
+              <th style="width:8%">Hypopnées</th>
+              <th style="width:6%">RERA</th>
+              <th style="width:7%">SpO2 min</th>
+              <th style="width:7%">SpO2 moy</th>
+              <th style="width:10%">Durée (min)</th>
+              <th style="width:15%">Commentaire</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (nuits().length > 0) {
+              @for (nuit of nuits(); track nuit.id_nuit) {
+                <tr>
+                  <td>{{ nuit.id_nuit }}</td>
+                  <td>{{ nuit.date_validation | date:'dd/MM/yyyy' }}</td>
+                  <td>{{ nuit.iah }}</td>
+                  <td>{{ nuit.severite_iah }}</td>
+                  <td>{{ nuit.nb_apnees }}</td>
+                  <td>{{ nuit.nb_hypopnees }}</td>
+                  <td>{{ nuit.nb_rera }}</td>
+                  <td>{{ nuit.spo2_min }}</td>
+                  <td>{{ nuit.spo2_moy }}</td>
+                  <td>{{ nuit.duree_sommeil_min }}</td>
+                  <td class="commentaire-cell">
+                    <textarea class="commentaire-input"
+                      (input)="commentaire.set($any($event.target).value); identifier.set(nuit.id_nuit)"
+                      placeholder="Ajouter un commentaire...">{{ nuit.commentaire_medical }}</textarea>
+                    <button class="btn-enregistrer" (click)="enregistrer()">Enregistrer</button>
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="11" style="text-align:center;padding:24px;color:var(--text-tertiary)">
+                  Chargement...
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>

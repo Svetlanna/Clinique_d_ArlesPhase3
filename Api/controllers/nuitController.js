@@ -62,7 +62,6 @@ export const getStats = async (req, res) => {
     }
 };
 
-
 export const medecineRoute = async (req, res) => {
     try {
         const rows = await medecine();
