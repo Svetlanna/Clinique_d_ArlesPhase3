@@ -5,39 +5,37 @@ import { LocalService } from './local';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // Centralized state
+  // Attributs (Signals)
   currentUser = signal<any | null>(null);
   appareils = signal<any | null>(null);
   medecines = signal<any | null>(null);
+  nuits = signal<any[]>([]);
 
-  constructor(
-    private http: HttpClient,
-    private localService: LocalService,
-  ) {
+  constructor(private http: HttpClient, private localService: LocalService) {
+    // Initialisation depuis le stockage local
     const mail = localService.getToken('auth_token');
     const role = localService.getToken('auth_role');
     if (mail) {
       this.currentUser.set({ mail, role });
     }
   }
+
+  // Fonctions d'authentification
   login(data: any) {
-    const payload = {
-      login: data.login,
-      password: data.password, // Modifié ici : on prend data.password directement
-    };
-
-    console.log('Payload envoyé:', payload); // vérifie dans la console
-
-    return this.http.post<any>('http://localhost:3000/auth/login', payload).pipe(
-      tap((reponse) => {
-        const userData = reponse.data;
-        this.localService.login(userData.login);
-        this.localService.saveToken('auth_role', userData.role);
-        this.currentUser.set(userData);
-      }),
-    );
+    return this.http
+      .post('http://localhost:3000/auth/login', data)
+      .pipe(tap((user: any) => this.currentUser.set(user)));
   }
 
+  logout() {
+    this.currentUser.set(null);
+  }
+
+  isLoggedIn(): boolean {
+    return this.currentUser() !== null;
+  }
+
+  // Fonctions de récupération de données
   getAppareils() {
     return this.http
       .get<any>('http://localhost:3000/api/appareil')
@@ -49,11 +47,16 @@ export class AuthService {
       .get<any>('http://localhost:3000/api/med')
       .pipe(tap((reponse) => this.medecines.set(reponse.data)));
   }
-  logout() {
-    this.currentUser.set(null);
+
+  fetchNuits() {
+    return this.http
+      .get<any>('http://localhost:3000/api/nuit')
+      .pipe(tap((reponse) => this.nuits.set(reponse.data)));
   }
 
-  isLoggedIn(): boolean {
-    return this.localService.estConnecte();
+  // Fonctions de mise à jour
+  updateCommentaire(idNuit: number, commentaire: string) {
+    return this.http
+      .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, { commentaire });
   }
 }

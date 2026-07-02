@@ -1,16 +1,81 @@
-  <h1>Welcome to {{ title() }}</h1>
-<div class="auth-container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <input formControlName="login" placeholder="Identifiant" />
-  <input formControlName="password" type="password" placeholder="Mot de passe" />
-  <button type="submit">Connexion</button>
-</form>
-<p *ngIf="message">{{ message }}</p>
-  @if (user(); as userData) {
-    <p>Bonjour {{ userData.nom }} ! Vous êtes bien connecté.</p>
-  } @else {
-    <p>Veuillez vous connecter pour accéder au contenu.</p>
-  }
+<div class="login-page">
+  <div class="login-wrapper">
+
+    <div class="login-brand">
+      <div class="brand-icon"><i class="ti ti-bolt"></i></div>
+      <span>{{ title() }}</span>
+    </div>
+
+    <div class="login-card">
+      <div class="login-card-header">
+        <h1>Connexion</h1>
+        <p>Accédez à votre espace de gestion</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="field">
+          <label for="email">Adresse e-mail</label>
+          <input id="email" type="email" formControlName="login"
+                 placeholder="exemple&#64;clinique.fr" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label for="password">Mot de passe</label>
+          <input id="password" type="password" formControlName="password"
+                 placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        @if (message) {
+          <div class="error-msg">
+            <i class="ti ti-alert-circle"></i>
+            {{ message }}
+          </div>
+        }
+
+        <button class="submit-btn" type="submit" [disabled]="loginForm.invalid">
+          Se connecter
+          <i class="ti ti-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+
+    <div class="creds-card">
+      <div class="creds-card-header">
+        <i class="ti ti-key"></i>
+        <span>Comptes de démonstration</span>
+        <span class="creds-hint">Cliquez pour remplir</span>
+      </div>
+      <table class="creds-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Mot de passe</th>
+            <th>Rôle</th>
+            <th>Actif</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr (click)="fillCredentials('admin_arles@gmail.com', 'azerty')">
+            <td>admin_arles&#64;gmail.com</td>
+            <td><code>azerty</code></td>
+            <td><span class="pill pill-blue">admin</span></td>
+            <td><span class="pill pill-green">oui</span></td>
+          </tr>
+          <tr (click)="fillCredentials('medecin_arles@gmail.com', 'azerty')">
+            <td>medecin_arles&#64;gmail.com</td>
+            <td><code>azerty</code></td>
+            <td><span class="pill pill-amber">médecin</span></td>
+            <td><span class="pill pill-green">oui</span></td>
+          </tr>
+          <tr (click)="fillCredentials('operateur_arles@gmail.com', 'azerty')">
+            <td>operateur_arles&#64;gmail.com</td>
+            <td><code>azerty</code></td>
+            <td><span class="pill pill-purple">opérateur</span></td>
+            <td><span class="pill pill-green">oui</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 </div>
-
-

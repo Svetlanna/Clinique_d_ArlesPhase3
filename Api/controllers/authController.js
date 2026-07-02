@@ -1,4 +1,4 @@
-import { pool } from '../config/db.js';
+import { pool } from '../../../Api/config/db.js';
 
 export const login = async (req, res) => {
     const { login, password } = req.body;
@@ -29,7 +29,7 @@ export const login = async (req, res) => {
         // Succès : on renvoie le login et le rôle
        res.json({
         data: {
-            login: user.login,
+            mail: user.login,
             role: user.role,
             mot_de_passe: user.mot_de_passe  // ← password en clair
         }

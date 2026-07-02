@@ -2,10 +2,7 @@ import sqlite3
 import os
 import matplotlib.pyplot as plt
 import shutil
-import mysql.connector
-import sys
 from etl.extract import recuperer_donnees
-
 
 
 def creer_tables_datalake():

@@ -1,8 +1,7 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,12 +11,15 @@ import { Router } from '@angular/router';
   styleUrl: './sidebar.css',
 })
 export class SidebarComponent {
+  // Injections
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  // Attributs
   protected readonly title = signal('CliniquePlus');
-  userRole = computed(() => this.user()?.role);
   user = this.authService.currentUser;
 
+  // Fonctions
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

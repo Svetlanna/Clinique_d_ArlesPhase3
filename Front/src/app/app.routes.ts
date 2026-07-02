@@ -3,15 +3,22 @@ import { Authification } from './authification/authification';
 import { Dashboard } from './dashboard/dashboard';
 import { Appareils } from './appareils/appareils';
 import { Medecines } from './medecines/medecines';
+import { NuitsPatients } from './nuits-patients/nuits-patients';
 import { AdminComponent } from './admin/admin';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: Authification },
-  { path: 'dashboard', component: Dashboard },
-  { path: 'appareils', component: Appareils },
-  { path: 'medecines', component: Medecines },
-  { path: 'admin', component: AdminComponent },
 
+  // Routes protégées par le Guard
+  { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
+  { path: 'appareils', component: Appareils, canActivate: [authGuard] },
+  { path: 'medecines', component: Medecines, canActivate: [authGuard] },
+  { path: 'nuitspatients', component: NuitsPatients, canActivate: [authGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
+
+  // Redirections
   { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: 'login' },
 ];
+

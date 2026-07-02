@@ -12,46 +12,39 @@ import { AuthService } from '../services/auth';
   styleUrl: './authification.css',
 })
 export class Authification {
+  // Attributs
   protected readonly title = signal('CliniquePlus');
   message: string = '';
   loginForm: FormGroup;
-  user = signal<any | null>(null);
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+    protected authService: AuthService,
     private router: Router,
   ) {
-    // authification.ts
+    // Initialisation du formulaire avec validateurs
     this.loginForm = this.fb.group({
       login: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]], // Modifié ici
+      password: ['', [Validators.required, Validators.minLength(5)]],
     });
   }
 
+  // Fonctions
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
-        next: (reponse: any) => {
-          const userData = reponse?.data ?? reponse;
-          this.authService.currentUser.set(userData);
-          const role = userData?.role;
-
-          if (role === 'admin') {
-            this.router.navigate(['/dashboard']);
-            // } else if (role === 'medecin') {
-            //    this.router.navigate(['/dashboard']);
-            //  } else if (role === 'operateur') {
-            //    this.router.navigate(['/operateur']);
-          } else {
-            this.router.navigate(['/dashboard']);
-          }
+        next: () => {
+          this.router.navigate(['/dashboard']);
         },
-        error: (erreur) => {
-          console.log('Erreur complète :', erreur.error);
-          this.message = 'Identifiants incorrects !';
+        error: () => {
+          this.message = 'Connexion refusée !';
         },
       });
     }
+  }
+
+  fillCredentials(login: string, password: string) {
+    this.loginForm.setValue({ login, password });
+    this.message = '';
   }
 }
