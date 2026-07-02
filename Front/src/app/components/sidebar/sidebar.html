@@ -9,20 +9,12 @@
     <button class="sb-item" routerLink="/dashboard" routerLinkActive="active">
       <i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord
     </button>
-    <button class="sb-item" routerLink="/appareils" routerLinkActive="active">
-      <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareils
-    </button>
     <button class="sb-item" routerLink="/resultats-nuit" routerLinkActive="active">
       <i class="ti ti-moon" aria-hidden="true"></i>Résultats nuit
     </button>
     <button class="sb-item" routerLink="/nuitspatients" routerLinkActive="active">
       <i class="ti ti-terminal-2" aria-hidden="true"></i>Nuits Patients
     </button>
-    @if (showMedecin()) {
-      <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
-        <i class="ti ti-shopping-bag" aria-hidden="true"></i>Les médecines
-      </button>
-    }
   </div>
 
   @if (showMedecin()) {
@@ -39,6 +31,12 @@
       <div class="sb-label">Opérateur</div>
       <button class="sb-item" routerLink="/test-operateur" routerLinkActive="active">
         <i class="ti ti-settings-2" aria-hidden="true"></i>Espace opérateur
+      </button>
+      <button class="sb-item" routerLink="/appareils" routerLinkActive="active">
+        <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareils
+      </button>
+      <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
+        <i class="ti ti-shopping-bag" aria-hidden="true"></i>Les médecins
       </button>
     </div>
   }
