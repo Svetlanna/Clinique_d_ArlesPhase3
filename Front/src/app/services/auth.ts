@@ -2,7 +2,6 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs';
 import { LocalService } from './local';
-import {Router} from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,7 +10,7 @@ export class AuthService {
   medecines = signal<any | null>(null);
   nuits = signal<any[]>([]);
 
-  constructor(private http: HttpClient, private localService: LocalService, private router: Router) {
+  constructor(private http: HttpClient, private localService: LocalService) {
     const mail = localService.getToken('auth_token');
     const role = localService.getToken('auth_role');
     if (mail) {
@@ -22,7 +21,13 @@ export class AuthService {
   login(data: any) {
     return this.http
       .post('http://localhost:3000/auth/login', data)
-      .pipe(tap((user: any) => this.currentUser.set(user)));
+      .pipe(tap((response: any) => {
+        const mail = response.data.mail;
+        const role = response.data.password;
+        this.localService.login(mail);
+        this.localService.saveToken('auth_role', role);
+        this.currentUser.set({ mail, role });
+      }));
   }
 
   getAppareils() {
@@ -50,7 +55,7 @@ export class AuthService {
 
   logout() {
     this.currentUser.set(null);
-    this.router.navigate(['/'])
+    this.localService.logout();
   }
 
   isLoggedIn(): boolean {
