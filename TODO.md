@@ -38,7 +38,7 @@ Contrairement aux deux points précédents, ce livrable obligatoire est globalem
 ## 4. 🟠 Schéma galaxie + `dim_suivi_patient` (livrable obligatoire)
 
 - [x] La table `dim_suivi_patient` est déjà modélisée dans `etl2/base_analytique.db`, avec FK vers `faits_nuits.id_suivi_le_plus_proche` et `faits_suivi_cpap_jour.id_suivi_le_plus_proche`.
-- [ ] Produire le diagramme logique demandé par le brief (aucun fichier diagramme trouvé dans le dépôt — dbdiagram.io, drawio ou mermaid conviennent) montrant où `dim_suivi_patient` s'insère dans la galaxie et quels faits s'y rattachent.
+- [x] Produire le diagramme logique demandé par le brief (aucun fichier diagramme trouvé dans le dépôt — dbdiagram.io, drawio ou mermaid conviennent) montrant où `dim_suivi_patient` s'insère dans la galaxie et quels faits s'y rattachent.
 
 ## 5. 🔴 Rapport pédagogique — non commencé
 
