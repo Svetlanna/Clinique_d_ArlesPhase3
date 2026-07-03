@@ -31,7 +31,7 @@ export const login = async (req, res) => {
         data: {
             mail: user.login,
             role: user.role,
-            mot_de_passe: user.mot_de_passe  // ← password en clair
+            mot_de_passe: user.mot_de_passe
         }
 
         });

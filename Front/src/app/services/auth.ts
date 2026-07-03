@@ -5,14 +5,18 @@ import { LocalService } from './local';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // Attributs (Signals)
   currentUser = signal<any | null>(null);
   appareils = signal<any | null>(null);
   medecines = signal<any | null>(null);
   nuits = signal<any[]>([]);
+  patients = signal<any[]>([]);
+  resultats = signal<any[]>([]);
+  patientDetail = signal<any | null>(null);
 
-  constructor(private http: HttpClient, private localService: LocalService) {
-    // Initialisation depuis le stockage local
+  constructor(
+    private http: HttpClient,
+    private localService: LocalService,
+  ) {
     const mail = localService.getToken('auth_token');
     const role = localService.getToken('auth_role');
     if (mail) {
@@ -20,22 +24,27 @@ export class AuthService {
     }
   }
 
-  // Fonctions d'authentification
   login(data: any) {
-    return this.http
-      .post('http://localhost:3000/auth/login', data)
-      .pipe(tap((user: any) => this.currentUser.set(user)));
+    return this.http.post<any>('http://localhost:3000/auth/login', data).pipe(
+      tap((res) => {
+        const user = res.data;
+        this.currentUser.set(user);
+        this.localService.saveToken('auth_token', user.mail);
+        this.localService.saveToken('auth_role', user.role);
+      }),
+    );
   }
 
   logout() {
     this.currentUser.set(null);
+    this.localService.removeToken('auth_token');
+    this.localService.removeToken('auth_role');
   }
 
   isLoggedIn(): boolean {
     return this.currentUser() !== null;
   }
 
-  // Fonctions de récupération de données
   getAppareils() {
     return this.http
       .get<any>('http://localhost:3000/api/appareil')
@@ -54,9 +63,27 @@ export class AuthService {
       .pipe(tap((reponse) => this.nuits.set(reponse.data)));
   }
 
-  // Fonctions de mise à jour
   updateCommentaire(idNuit: number, commentaire: string) {
+    return this.http.patch<any>(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, {
+      commentaire,
+    });
+  }
+
+  fetchPatients() {
     return this.http
-      .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, { commentaire });
+      .get<any>('http://localhost:3000/api/patient')
+      .pipe(tap((reponse) => this.patients.set(reponse.data)));
+  }
+
+  fetchPatientDetail(idPatient: number | string) {
+    return this.http
+      .get<any>(`http://localhost:3000/api/patient/${idPatient}`)
+      .pipe(tap((reponse) => this.patientDetail.set(reponse.data)));
+  }
+
+  fetchResultats(idPatient: number | string) {
+    return this.http
+      .get<any>(`http://localhost:3000/api/patient/${idPatient}/resultats`)
+      .pipe(tap((reponse) => this.resultats.set(reponse.data)));
   }
 }

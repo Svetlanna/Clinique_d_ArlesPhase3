@@ -29,14 +29,15 @@ export class Authification {
     });
   }
 
-  // Fonctions
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
+        next: (res) => {
+          console.log('Login OK', res);
           this.router.navigate(['/dashboard']);
         },
-        error: () => {
+        error: (err) => {
+          console.error('Erreur login', err); // <-- regardez le statut et le message ici
           this.message = 'Connexion refusée !';
         },
       });

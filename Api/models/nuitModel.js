@@ -14,7 +14,20 @@ export const getAllNuits = async (req, res) => {
         res.status(500).json({ status: 'error', message: error.message });
     }
 };
-
+export const fetchAllDossiers = async () => {
+    const [rows] = await pool.query(`
+        SELECT 
+            p.id_patient, 
+            p.nom, 
+            p.prenom, 
+            n.date_nuit, 
+            n.type_etude,
+            n.commentaire_medical
+        FROM patient p
+        LEFT JOIN nuit_etude n ON p.id_patient = n.id_patient
+    `);
+    return rows;
+};
 export const updateCommentaire = async (idNuit, commentaire) => {
     await pool.execute(
         'UPDATE resultat_nuit SET commentaire_medical = ? WHERE id_nuit = ?',

@@ -5,6 +5,7 @@ import { Appareils } from './appareils/appareils';
 import { Medecines } from './medecines/medecines';
 import { NuitsPatients } from './nuits-patients/nuits-patients';
 import { AdminComponent } from './admin/admin';
+import { DossierPatient } from './dossier-patient/dossier-patient';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -15,10 +16,10 @@ export const routes: Routes = [
   { path: 'appareils', component: Appareils, canActivate: [authGuard] },
   { path: 'medecines', component: Medecines, canActivate: [authGuard] },
   { path: 'nuitspatients', component: NuitsPatients, canActivate: [authGuard] },
+  { path: 'dossierpatient', component: DossierPatient, canActivate: [authGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
 
   // Redirections
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
 ];
-

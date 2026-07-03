@@ -24,6 +24,12 @@
         <i class="ti ti-chart-bar" aria-hidden="true"></i>Nuit étude
       </button>
     }
+    @if (user()?.role === 'medecin') {
+       <button class="sb-item" routerLink="/dossierpatient" routerLinkActive="active">
+      <i class="ti ti-file-text" aria-hidden="true"></i>Dossier Patient
+    </button>
+
+    }
   </div>
 
   <div class="sb-section">

@@ -8,7 +8,15 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
+export const DossierPatients = async (req, res) => {
+    try {
+        // Appelez la fonction correspondante dans le modèle
+        const data = await NuitModel.fetchAllDossiers();
+        res.status(200).json({ status: 'success', data });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
 export const runNuit = async (req, res) => {
     try {
         const data = await NuitModel.fetchNuitData(req.params.id);
