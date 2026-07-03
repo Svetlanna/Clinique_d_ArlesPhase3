@@ -38,7 +38,6 @@ def get_resultats(id_nuit=None):
     try:
         query = "CALL sp_lire_resultat_nuit(%s);"
         df = pd.read_sql(query, myconn, params=[id_nuit])
-        myconn.close()
         return df
     except Exception as e:
         st.error(f"Erreur BDD : {e}")
@@ -54,7 +53,6 @@ def get_liste_nuits():
             JOIN resultat_nuit r ON r.id_nuit = n.id_nuit
             ORDER BY n.date_nuit DESC
         """, myconn)
-        myconn.close()
         return df
     except Exception as e:
         st.error(f"Erreur liste nuits : {e}")
