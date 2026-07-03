@@ -31,8 +31,8 @@ C'est un livrable obligatoire. Le composant front existe mais est un simple mock
 Contrairement aux deux points précédents, ce livrable obligatoire est globalement fait : [etl2/extract2.py](etl2/extract2.py) lit le CSV, calcule correctement les deux alertes (observance < 4h, IAH résiduel > 5) et insère dans `faits_suivi_cpap_jour`. Le CSV de test ([etl2/raw_cpap/signal-cpap-patient-1-appareil-1.csv](etl2/raw_cpap/signal-cpap-patient-1-appareil-1.csv)) correspond bien au patient 1 = "Tessier" et couvre juin 2026 avec plusieurs jours d'alerte (double alerte les 04/06 et 06/06 notamment).
 
 - [ ] Rendre `id_patient` / `id_appareil` paramétrables (CLI ou variable) au lieu du nom de fichier codé en dur `filename = "signal-cpap-patient-1-appareil-1.csv"` ([extract2.py:24](etl2/extract2.py)).
-- [ ] Corriger le nom de fonction `cehck_id_suivi` → `check_id_suivi` (typo, [extract2.py:91](etl2/extract2.py)).
-- [ ] Vérifier l'idempotence : aucune contrainte `UNIQUE(id_patient, id_temps)` visible sur `faits_suivi_cpap_jour` — relancer le script deux fois duplique probablement les lignes.
+- [X] Corriger le nom de fonction `cehck_id_suivi` → `check_id_suivi` (typo, [extract2.py:91](etl2/extract2.py)).
+- [X] Vérifier l'idempotence : aucune contrainte `UNIQUE(id_patient, id_temps)` visible sur `faits_suivi_cpap_jour` — relancer le script deux fois duplique probablement les lignes.
 - [ ] (Optionnel) exposer un déclenchement de ce script depuis l'app (endpoint Express), le brief ne l'exige pas mais ça faciliterait la démo.
 
 ## 4. 🟠 Schéma galaxie + `dim_suivi_patient` (livrable obligatoire)
