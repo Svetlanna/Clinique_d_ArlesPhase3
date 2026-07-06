@@ -72,7 +72,7 @@ export const fetchNuitData = async (idNuit) => {
 
 
 export const getStats = async (id) => {
-    // Utilise la fonction d'extraction importée
+
     const rawData = await recupererDonnees(id);
 
     // Transforme et retourne les indicateurs

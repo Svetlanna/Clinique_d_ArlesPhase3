@@ -1,7 +1,7 @@
-// routes/nuitRoutes.js
+
 
 import express from 'express';
-// AJOUTEZ getAllNuits dans la liste des imports ci-dessous :
+
 import {
     getNuitData,
     getStats,

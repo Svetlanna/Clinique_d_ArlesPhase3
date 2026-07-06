@@ -12,7 +12,7 @@ export class AuthService {
   patients = signal<any[]>([]);
   resultats = signal<any[]>([]);
   patientDetail = signal<any | null>(null);
-
+  cpap = signal<any[]>([]);
   constructor(
     private http: HttpClient,
     private localService: LocalService,
@@ -49,6 +49,11 @@ export class AuthService {
     return this.http
       .get<any>('http://localhost:3000/api/appareil')
       .pipe(tap((reponse) => this.appareils.set(reponse.data)));
+  }
+  fetchCpap(){
+    return this.http
+    .get<any>('http://localhost:3000/api/cpap')
+    .pipe(tap((reponse) => this.cpap.set(reponse.cpap)));
   }
 
   fetchMedecines() {

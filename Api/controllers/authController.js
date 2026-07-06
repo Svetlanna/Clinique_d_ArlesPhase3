@@ -9,7 +9,7 @@ export const login = async (req, res) => {
 
 
     try {
-        // La requête est correcte pour votre structure de table actuelle
+
         const [rows] = await pool.query(
             'SELECT login, mot_de_passe, role FROM utilisateur WHERE login = ? AND actif = 1',
             [login]
@@ -21,12 +21,12 @@ export const login = async (req, res) => {
 
         const user = rows[0];
 
-        // Vérification du mot de passe (comparaison simple car vos données sont en clair dans la capture)
+
         if (password !== user.mot_de_passe) {
             return res.status(401).json({ status: 'error', message: 'Identifiants invalides' });
         }
 
-        // Succès : on renvoie le login et le rôle
+
        res.json({
         data: {
             mail: user.login,

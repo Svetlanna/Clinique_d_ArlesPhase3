@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../components/sidebar/sidebar';
 import { AuthService } from '../../app/services/auth';
-
+import { Router, NavigationEnd } from '@angular/router';
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -13,10 +13,9 @@ import { AuthService } from '../../app/services/auth';
   styleUrls: ['./admin.css'],
 })
 export class AdminComponent implements OnInit {
-  // Injection moderne avec inject()
+  private router = inject(Router);
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-
   nuits: any[] = [];
   medecins: any[] = [];
 
@@ -30,8 +29,15 @@ export class AdminComponent implements OnInit {
     idMedecin: '',
   };
 
-  // Plus besoin de déclarer http ici puisque inject() est utilisé au-dessus
-  constructor() {}
+
+  constructor() {
+    this.router.events.subscribe((event) => {
+     // if (event instanceof NavigationEnd) {
+        this.chargerNuits();
+        this.chargerMedecins();
+      //}
+    });
+  }
 
   ngOnInit() {
     this.chargerNuits();
@@ -40,7 +46,8 @@ export class AdminComponent implements OnInit {
 
   chargerNuits() {
     this.http.get<any>('http://localhost:3000/api/nuit').subscribe((res) => {
-      this.nuits = res.data;
+      console.log('Contenu de la réponse API :', res); // Regardez ici dans la console
+      this.nuits = res.data || res; // S'adapte si la structure change
     });
   }
 

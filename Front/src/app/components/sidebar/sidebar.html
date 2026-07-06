@@ -10,34 +10,57 @@
       <i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord
     </button>
     <button class="sb-item" routerLink="/appareils" routerLinkActive="active">
-      <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareil
+      <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareils
     </button>
-    <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
-      <i class="ti ti-shopping-bag" aria-hidden="true"></i>Les médecins
+    <button class="sb-item" routerLink="/resultats-nuit" routerLinkActive="active">
+      <i class="ti ti-moon" aria-hidden="true"></i>Résultats nuit
     </button>
     <button class="sb-item" routerLink="/nuitspatients" routerLinkActive="active">
       <i class="ti ti-terminal-2" aria-hidden="true"></i>Nuits Patients
     </button>
 
-    @if (user()?.role === 'admin') {
-      <button class="sb-item" routerLink="/admin" routerLinkActive="active">
-        <i class="ti ti-chart-bar" aria-hidden="true"></i>Nuit étude
+    @if (user()?.role === 'medecin') {
+      <button class="sb-item" routerLink="/dossierpatient" routerLinkActive="active">
+        <i class="ti ti-file-text" aria-hidden="true"></i>Dossier Patient
       </button>
     }
-    @if (user()?.role === 'medecin') {
-       <button class="sb-item" routerLink="/dossierpatient" routerLinkActive="active">
-      <i class="ti ti-file-text" aria-hidden="true"></i>Dossier Patient
-    </button>
-
-    }
   </div>
 
-  <div class="sb-section">
-    <div class="sb-label">Système</div>
-    <button class="sb-item"><i class="ti ti-settings" aria-hidden="true"></i>Paramètres</button>
-    <button class="sb-item"><i class="ti ti-shield-lock" aria-hidden="true"></i>Permissions</button>
-    <button class="sb-item"><i class="ti ti-terminal-2" aria-hidden="true"></i>Logs</button>
-  </div>
+  @if (showMedecin()) {
+    <div class="sb-section">
+      <div class="sb-label">Médecin</div>
+      <button class="sb-item" routerLink="/test-medecin" routerLinkActive="active">
+        <i class="ti ti-stethoscope" aria-hidden="true"></i>Espace médecin
+      </button>
+      <button class="sb-item" routerLink="/cpap" routerLinkActive="active">
+        <i class="ti ti-heart" aria-hidden="true"></i>Suivi CPAP
+      </button>
+      <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
+        <i class="ti ti-shopping-bag" aria-hidden="true"></i>Liste médecins
+      </button>
+    </div>
+  }
+
+  @if (showOperateur()) {
+    <div class="sb-section">
+      <div class="sb-label">Opérateur</div>
+      <button class="sb-item" routerLink="/test-operateur" routerLinkActive="active">
+        <i class="ti ti-settings-2" aria-hidden="true"></i>Espace opérateur
+      </button>
+    </div>
+  }
+
+  @if (user()?.role === 'admin') {
+    <div class="sb-section">
+      <div class="sb-label">Système</div>
+      <button class="sb-item" routerLink="/admin" routerLinkActive="active">
+        <i class="ti ti-chart-bar" aria-hidden="true"></i>Nuit étude (Admin)
+      </button>
+      <button class="sb-item"><i class="ti ti-settings" aria-hidden="true"></i>Paramètres</button>
+      <button class="sb-item"><i class="ti ti-shield-lock" aria-hidden="true"></i>Permissions</button>
+      <button class="sb-item"><i class="ti ti-terminal-2" aria-hidden="true"></i>Logs</button>
+    </div>
+  }
 
   <div class="sb-footer">
     <div class="sb-item">
@@ -52,7 +75,7 @@
           <div style="font-size:11px;color:var(--text-tertiary)">
             {{ user()?.role }}
           </div>
-          <button (click)="logout()" style="font-size:11px; cursor:pointer;">Déconnexion</button>
+          <button (click)="logout()" style="font-size:11px; cursor:pointer; background:none; border:none; padding:0; color:var(--text-secondary);">Déconnexion</button>
         } @else {
           <p>Veuillez vous connecter</p>
         }
