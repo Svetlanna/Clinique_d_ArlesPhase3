@@ -32,6 +32,9 @@ def init_db():
     conn.commit()
     return conn
 
+conn = init_db()
+cur = conn.cursor()
+
 load_dotenv()
 myconn = mysql.connector.connect(
     host=os.environ.get("DB_HOST", "localhost"),
@@ -41,12 +44,7 @@ myconn = mysql.connector.connect(
     database=os.environ.get("DB_NAME", "cliniquearles")
 )
 
-conn = init_db()
-cur = conn.cursor()
 
-cur.execute("""
-    DELETE FROM faits_suivi_cpap_jour WHERE id_patient = 1;
-""")
 def extract_id(filename : str) -> tuple[int,int]:
     match = re.search(r'signal-cpap-patient-(\d+)-appareil-(\d+)\.csv', filename)
     if not match:
@@ -125,13 +123,13 @@ def extract_donnees(id_patient : int, id_appareil : int):
                 return id_suivi_result
             else: 
                 return 0
-        #il y a potentiellement besoin de remplir la table dim_suivi_patient mais c'est trop long (FLEMME) 
+        #il faut remplir la table dim_suivi_patient mais on doit syncroniser la baseanalytique avec la bdd
         
 
         cur_mysql = myconn.cursor(buffered=True)
         
         cur_mysql.execute("Select id_suivi from suivi_patient where id_patient = %s", (id_patient,))
-        #il faut faire une autre fonction pour voir si l'id_suivi existe sur MYSQL mais comme la bdd n'est pas a jour avec le projet surtout que le front n'est pas encore fini je laisse tomber pour maintenant
+        #il faut faire une autre fonction pour voir si l'id_suivi existe sur MYSQL mais comme la bdd n'est pas a jour avec le projet je laisse tomber pour maintenant
         result = cur_mysql.fetchone()
         if result is None:
             raise ValueError(f"no suivi pour {id_patient}")
@@ -149,8 +147,8 @@ def extract_donnees(id_patient : int, id_appareil : int):
         load_export_1.append({
         'id_patient' : id_patient,
         'id_temps': id_temps,
-        'id_suivi_le_plus_proche': id_suivi_le_plus_proche,  # Fixed key name
-        'id_suivi_source': id_suivi_source,  # Fixed key name
+        'id_suivi_le_plus_proche': id_suivi_le_plus_proche,
+        'id_suivi_source': id_suivi_source,
         'duree_utilisation': duree_utilisation,
         'iah_residuel': iah_residuel,
         'fuite_l_min': fuite_l_min,
