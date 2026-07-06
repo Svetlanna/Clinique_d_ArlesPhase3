@@ -1,0 +1,339 @@
+{
+  "info": {
+    "_postman_id": "b6f2a1f0-3c1e-4e6a-9b6d-clinique-arles-api",
+    "name": "Clinique du Sommeil d'Arles - API",
+    "description": "Collection de toutes les routes Express existantes (Api/routes/*.js). Format Postman Collection v2.1, importable dans Bruno.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login\": \"medecin1\",\n  \"password\": \"changeme\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Nuit",
+      "item": [
+        {
+          "name": "Liste des nuits (resultat_nuit)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/nuit/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "nuit", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Données capteurs + événements d'une nuit",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/nuit/1/run",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "nuit", "1", "run"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Stats calculées d'une nuit",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/nuit/1/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "nuit", "1", "stats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mettre à jour le commentaire",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commentaire\": \"RAS, à revalider\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/nuit/1/commentaire",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "nuit", "1", "commentaire"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update nuit (commentaire + médecin, spawn Etl/index.py)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"commentaire\": \"RAS\",\n  \"idMedecin\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/nuit/1/update",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "nuit", "1", "update"]
+            },
+            "description": "Attention : appelle Etl/index.py via spawn, script actuellement absent du dépôt (route cassée)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Médecins",
+      "item": [
+        {
+          "name": "Liste des médecins",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/med/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "med", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Médecin par id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/med/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "med", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Appareils",
+      "item": [
+        {
+          "name": "Liste des appareils",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/appareil/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appareil", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Appareil par id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/appareil/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appareil", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un appareil",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modele\": \"Natus Embla N7000\",\n  \"numero_serie\": \"SN-000123\",\n  \"fabricant\": \"Natus\",\n  \"date_installation\": \"2024-01-15\",\n  \"statut\": \"actif\",\n  \"localisation\": \"Chambre 3\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/appareil/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appareil", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mettre à jour un appareil",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modele\": \"Natus Embla N7000\",\n  \"numero_serie\": \"SN-000123\",\n  \"fabricant\": \"Natus\",\n  \"date_installation\": \"2024-01-15\",\n  \"statut\": \"maintenance\",\n  \"localisation\": \"Chambre 3\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/appareil/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appareil", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un appareil",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/appareil/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "appareil", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CPAP",
+      "item": [
+        {
+          "name": "Suivi CPAP (faits_suivi_cpap_jour, etl2/base_analytique.db)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cpap/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cpap", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytique",
+      "item": [
+        {
+          "name": "Résultats nuit (liste + détail)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/resultats-nuit?id_nuit=1&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "resultats-nuit"],
+              "query": [
+                { "key": "id_nuit", "value": "1" },
+                { "key": "search", "value": "", "disabled": true }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Prédiction comorbidités (IA)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/comorbidites?id_patient=1&id_nuit=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "comorbidites"],
+              "query": [
+                { "key": "id_patient", "value": "1" },
+                { "key": "id_nuit", "value": "1" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dashboard CPAP (overview + alertes + IA)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/dashboard?id_patient=1&days=30&seuil=0.35",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "dashboard"],
+              "query": [
+                { "key": "id_patient", "value": "1" },
+                { "key": "days", "value": "30" },
+                { "key": "seuil", "value": "0.35" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Valider le diagnostic d'une nuit",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_medecin_validateur\": 1,\n  \"commentaire\": \"Validation via Bruno\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/resultats-nuit/1/valider",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "resultats-nuit", "1", "valider"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Import mini ETL CPAP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_patient\": 1,\n  \"id_appareil\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/cpap/import",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "cpap", "import"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
