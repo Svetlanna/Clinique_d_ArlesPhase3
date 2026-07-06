@@ -48,13 +48,18 @@ export const updateCommentaire = async (req, res) => {
     }
 };
 
-// Assigner un médecin
-export const assignMedecin = async (req, res) => {
-    const { id } = req.params;
-    const { idMedecin } = req.body;
-    await pool.execute('UPDATE nuit_etude SET id_medecin = ? WHERE id_nuit = ?', [idMedecin, id]);
-    res.status(200).json({ status: 'success' });
-};
+export const updateMedecin = async (req,res) => {
+    try {
+        const idNuit = req.params.id;
+        const idMedecin = req.body.idMedecin;
+        await NuitModel.updateMedecin(idNuit,idMedecin);
+        res.status(200).json({status:'success', data:{idNuit,idMedecin}});
+
+    }catch(error){
+        res.status(500).json({status:'error', message:error.message});
+    }
+}
+
 
 
 export const getNuitData = async (req, res) => {

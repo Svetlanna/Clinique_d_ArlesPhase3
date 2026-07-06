@@ -19,9 +19,12 @@
 }
 
 .commentaire-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  min-width: 200px;
+}
+
+.tbl th:last-child,
+.tbl td:last-child {
+  min-width: 200px;
 }
 
 .commentaire-input {

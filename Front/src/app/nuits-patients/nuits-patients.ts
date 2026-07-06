@@ -18,7 +18,8 @@ export class NuitsPatients implements OnInit {
   nuits = this.authService.nuits;
   commentaire = signal('');
   identifier = signal(0);
-  popUp = signal(false)
+  popUp = signal(false);
+  selectedMedecin = signal(0)
 
   ngOnInit() {
     this.authService.fetchMedecines().subscribe({
@@ -36,6 +37,17 @@ export class NuitsPatients implements OnInit {
       next: () => (this.popUp.set(true),console.log('Commentaire enregistré'), setTimeout(() => {this.popUp.set(false);}, 3000)),
       error: (err: any) => console.error('Erreur:', err),
       
+    });
+  }
+chargerMedecin(idNuit: number, idMedecin: number) {
+    console.log('idNuit:', idNuit, 'idMedecin:', idMedecin);
+    this.authService.updateMedecin(idNuit, idMedecin).subscribe({
+      next: () => { 
+        console.log('Médecin enregistré');
+        this.authService.fetchNuits().subscribe();
+        console.log('Médecin enregistré')
+      },
+      error: (err: any) => console.error('Erreur API', err)
     });
   }
 }

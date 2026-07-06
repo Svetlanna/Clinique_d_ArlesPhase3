@@ -9,6 +9,7 @@ export class AuthService {
   appareils = signal<any | null>(null);
   medecines = signal<any | null>(null);
   nuits = signal<any[]>([]);
+  cpap = signal<any[]>([]);
 
   constructor(private http: HttpClient, private localService: LocalService) {
     const mail = localService.getToken('auth_token');
@@ -45,12 +46,24 @@ export class AuthService {
   fetchNuits() {
     return this.http
       .get<any>('http://localhost:3000/api/nuit')
-      .pipe(tap((reponse) => this.nuits.set(reponse.data)));
+      .pipe(tap((reponse) => {
+        this.nuits.set([])
+        this.nuits.set(reponse.data)}));
+      }
+  
+  fetchCpap(){
+    return this.http
+    .get<any>('http://localhost:3000/api/cpap')
+    .pipe(tap((reponse) => this.cpap.set(reponse.cpap)));
   }
 
   updateCommentaire(idNuit: number, commentaire: string) {
     return this.http
       .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, { commentaire });
+  }
+  updateMedecin(idNuit : number, idMedecin : number) {
+    return this.http
+    .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/medecin`,{idMedecin});
   }
 
   logout() {

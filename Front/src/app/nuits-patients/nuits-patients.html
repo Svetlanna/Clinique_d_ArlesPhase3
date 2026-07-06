@@ -1,23 +1,7 @@
 <div class="shell">
   <app-sidebar></app-sidebar>
-
   <div class="main">
     <div class="content">
-
-      <div class="card" style="margin-bottom: 20px;">
-        <div class="card-hd">
-          <small class="card-hd-title">Filtrer par médecin</small>
-        </div>
-        <select name="aaa" id="select-medecin">
-          <option value="">-- Veuillez choisir --</option>
-          @for(medecin of medecines(); track medecin.id_personnel) {
-            <option [value]="medecin.id_personnel">{{ medecin.prenom }} {{ medecin.nom }}</option>
-          } @empty {
-            <option disabled>Aucun médecin disponible</option>
-          }
-        </select>
-      </div>
-
       <div class="card">
         <div class="card-hd">
           <small class="card-hd-title">Nuits réalisées ({{ nuits().length }})</small>
@@ -26,7 +10,8 @@
         <table class="tbl">
           <thead>
             <tr>
-              <th style="width:5%">ID</th>
+              <th style="width:10%">Nom patient</th>
+              <th style = "width:10%;">medecin validateur</th>
               <th style="width:10%">Date</th>
               <th style="width:8%">IAH</th>
               <th style="width:10%">Sévérité</th>
@@ -43,7 +28,14 @@
             @if (nuits().length > 0) {
               @for (nuit of nuits(); track nuit.id_nuit) {
                 <tr>
-                  <td>{{ nuit.id_nuit }}</td>
+                  <td>{{ nuit.nom_patient }}</td>
+                  <td>{{nuit.nom_medecinValidateur}}</td>
+                  <td> <select (change)="chargerMedecin(nuit.id_nuit, +$any($event.target).value)">
+                         <option value="">-- Choisir --</option>
+                        @for(medecin of medecines(); track $index) {
+                       <option [value]="medecin.id_personnel">{{ medecin.prenom }} {{ medecin.nom }}</option> }
+                       </select>
+                  </td>
                   <td>{{ nuit.date_validation | date:'dd/MM/yyyy' }}</td>
                   <td>{{ nuit.iah }}</td>
                   <td>{{ nuit.severite_iah }}</td>
