@@ -50,10 +50,10 @@ export class AuthService {
       .get<any>('http://localhost:3000/api/appareil')
       .pipe(tap((reponse) => this.appareils.set(reponse.data)));
   }
-  fetchCpap(){
+  fetchCpap() {
     return this.http
-    .get<any>('http://localhost:3000/api/cpap')
-    .pipe(tap((reponse) => this.cpap.set(reponse.cpap)));
+      .get<any>('http://localhost:3000/api/cpap')
+      .pipe(tap((reponse) => this.cpap.set(reponse.cpap)));
   }
 
   fetchMedecines() {
@@ -63,9 +63,15 @@ export class AuthService {
   }
 
   fetchNuits() {
-    return this.http
-      .get<any>('http://localhost:3000/api/nuit')
-      .pipe(tap((reponse) => this.nuits.set(reponse.data)));
+    return this.http.get<any>('http://localhost:3000/api/nuit/all').pipe(
+      tap((reponse) => {
+        this.nuits.set([]);
+        this.nuits.set(reponse.data);
+      }),
+    );
+  }
+  updateMedecin(idNuit: number, idMedecin: number) {
+    return this.http.patch<any>(`http://localhost:3000/api/nuit/${idNuit}/medecin`, { idMedecin });
   }
 
   updateCommentaire(idNuit: number, commentaire: string) {

@@ -73,6 +73,9 @@
     <div class="card-hd">
       <span class="card-hd-title">Informations Médicales : {{ patientDetail().patient.patient }}</span>
     </div>
+    <h5>Courbes de suivi :</h5>
+
+
     <div class="card-body" style="padding: 15px;">
       <p><strong>Âge :</strong> {{ patientDetail().patient.age }} ans</p>
       <p><strong>Dernier suivi :</strong> {{ patientDetail().dernierSuivi?.date_suivi | date:'dd/MM/yyyy' }}</p>

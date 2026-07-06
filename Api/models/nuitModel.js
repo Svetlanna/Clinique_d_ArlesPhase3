@@ -6,14 +6,33 @@ import { recupererDonnees } from '../etl/extract.js';
 import { calculerIndicateurs } from '../etl/transform.js';
 
 
-export const getAllNuits = async (req, res) => {
-    try {
-        const nuits = await NuitModel.getAllNuits();
-        res.status(200).json({ status: 'success', data: nuits });
-    } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
-    }
+
+/*New*/
+export const getAllNuits = async () => {
+const [rows] = await pool.execute('SELECT * FROM `vue_resultat_nuit`');
+return rows;
 };
+export const updateMedecin = async (idNuit, idMedecin) => {
+await pool.execute(
+'UPDATE resultat_nuit SET id_medecin_validateur = ? WHERE id_nuit = ?',
+[idMedecin, idNuit]
+);
+};
+
+
+
+// // old
+// export const getAllNuits = async (req, res) => {
+//     try {
+//         const nuits = await NuitModel.getAllNuits();
+//         res.status(200).json({ status: 'success', data: nuits });
+//     } catch (error) {
+//         res.status(500).json({ status: 'error', message: error.message });
+//     }
+// };
+// // old
+
+
 export const fetchAllDossiers = async () => {
     const [rows] = await pool.query(`
         SELECT 

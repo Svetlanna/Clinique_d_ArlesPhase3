@@ -1,6 +1,6 @@
 -- ============================================================
 --  MIGRATION AUTH  –  Clinique Sommeil
---  À exécuter UNE seule fois sur ta base clinique2nuitsv2
+--  À exécuter UNE seule fois sur ta base cliniquearles
 -- ============================================================
 
 -- 1. Ajouter le mot de passe hashé sur la table personnel

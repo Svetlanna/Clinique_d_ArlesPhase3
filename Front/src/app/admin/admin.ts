@@ -1,10 +1,10 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../components/sidebar/sidebar';
 import { AuthService } from '../../app/services/auth';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -16,8 +16,18 @@ export class AdminComponent implements OnInit {
   private router = inject(Router);
   private http = inject(HttpClient);
   private authService = inject(AuthService);
-  nuits: any[] = [];
-  medecins: any[] = [];
+
+  // BUG FIX : l'app tourne en zoneless (pas de zone.js dans package.json /
+  // angular.json => Angular 22 zoneless par défaut). Dans ce mode, muter une
+  // simple propriété de classe (nuits: any[] = []) DANS un callback
+  // .subscribe() ne déclenche PAS de rafraîchissement de la vue : les
+  // données arrivent bien en mémoire, mais l'écran ne se met à jour que si
+  // un autre événement (ex: un clic qui déclenche une navigation) force une
+  // détection de changement au passage. D'où le "ça marche au 2e clic".
+  // On passe donc nuits/medecins en signals, comme le fait déjà
+  // nuits-patients.ts (qui lui n'a jamais eu ce problème).
+  nuits = signal<any[]>([]);
+  medecins = signal<any[]>([]);
 
   user = this.authService.currentUser;
   userRole = computed(() => this.user()?.role);
@@ -29,15 +39,7 @@ export class AdminComponent implements OnInit {
     idMedecin: '',
   };
 
-
-  constructor() {
-    this.router.events.subscribe((event) => {
-     // if (event instanceof NavigationEnd) {
-        this.chargerNuits();
-        this.chargerMedecins();
-      //}
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     this.chargerNuits();
@@ -46,22 +48,22 @@ export class AdminComponent implements OnInit {
 
   chargerNuits() {
     this.http.get<any>('http://localhost:3000/api/nuit').subscribe((res) => {
-      console.log('Contenu de la réponse API :', res); // Regardez ici dans la console
-      this.nuits = res.data || res; // S'adapte si la structure change
+      console.log('Contenu de la réponse API :', res);
+      this.nuits.set(res.data || res);
     });
   }
 
   chargerMedecins() {
     this.http.get<any>('http://localhost:3000/api/med').subscribe((res) => {
-      this.medecins = res.data;
+      this.medecins.set(res.data);
     });
   }
 
   openEditModal(nuit: any) {
     this.selectedNuit = nuit;
     this.editForm = {
-      commentaire: nuit.notes_techniques || '',
-      idMedecin: nuit.id_medecin || '',
+      commentaire: nuit.commentaire_medical || '',
+      idMedecin: '',
     };
     this.showModal = true;
   }
@@ -69,17 +71,34 @@ export class AdminComponent implements OnInit {
   saveChanges() {
     const idNuit = this.selectedNuit?.id_nuit;
 
-    const payload = {
-      commentaire: this.editForm.commentaire,
-      idMedecin: this.editForm.idMedecin,
-    };
+    const requetes = [];
 
-    this.http.put(`http://localhost:3000/api/nuit/${idNuit}/update`, payload).subscribe({
-      next: () => {
-        this.chargerNuits();
-        this.showModal = false;
-      },
-      error: (err) => console.error('Erreur lors de la mise à jour:', err),
-    });
+    requetes.push(
+      this.http.patch(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, {
+        commentaire: this.editForm.commentaire,
+      }),
+    );
+
+    if (this.editForm.idMedecin) {
+      requetes.push(
+        this.http.patch(`http://localhost:3000/api/nuit/${idNuit}/medecin`, {
+          idMedecin: this.editForm.idMedecin,
+        }),
+      );
+    }
+
+    let restantes = requetes.length;
+    requetes.forEach((req) =>
+      req.subscribe({
+        next: () => {
+          restantes--;
+          if (restantes === 0) {
+            this.chargerNuits();
+            this.showModal = false;
+          }
+        },
+        error: (err) => console.error('Erreur lors de la mise à jour:', err),
+      }),
+    );
   }
 }

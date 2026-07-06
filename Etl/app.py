@@ -50,7 +50,7 @@ def get_conn():
         port=int(os.environ.get("DB_PORT", 3333)),
         user=os.environ.get("DB_USER", "root"),
         password=os.environ.get("DB_PASSWORD", ""),
-        database=os.environ.get("DB_NAME", "cliniquearles"),
+        database=os.environ.get("DB_NAME", "clinique"),
     )
 
 def query(sql, params=None):

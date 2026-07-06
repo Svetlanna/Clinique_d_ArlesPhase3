@@ -29,12 +29,24 @@ export const runNuit = async (req, res) => {
 
 export const getAllNuitEtude = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM v_nuit_etude');
+        const [rows] = await pool.query('SELECT * FROM vue_resultat_nuit');
         res.status(200).json({ status: 'success', count: rows.length, data: rows });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }
 };
+
+export const updateMedecin = async (req, res) => {
+    try {
+    const idNuit = req.params.id; // from URL: /api/nuit/3/medecin
+    const idMedecin = req.body.idMedecin; // from request body
+    await NuitModel.updateMedecin(idNuit, idMedecin);
+    res.status(200).json({ status: 'success', data: { idNuit, idMedecin } });
+    } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+    }
+};
+
 
 export const getAllNuits = async (req, res) => {
     try {

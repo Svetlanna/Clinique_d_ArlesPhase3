@@ -41,7 +41,18 @@ export class DossierPatient implements OnInit {
       error: (err: any) => console.error('Erreur API patients:', err),
     });
   }
+  private getPatientSlug(nom: string): string {
+    return nom
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Enlève les accents
+      .replace(/\s+/g, '_'); // Remplace les espaces par des _
+  }
 
+  getCheminCourbe(type: string, numero: number): string {
+    const nom = this.patientDetail()?.patient.patient || 'inconnu';
+    return `/courbe_${type}_nuit_${numero}.png`;
+  }
   onRechercheChange(valeur: string) {
     this.recherche.set(valeur);
   }
@@ -64,88 +75,98 @@ export class DossierPatient implements OnInit {
     });
   }
 
-
-
-  genererFichierPatientPDF() {
-  const detail = this.patientDetail();
-
-  // 1. Protection contre les données nulles
-  if (!detail || !detail.patient || !detail.dernierSuivi) {
-    alert("Données patient indisponibles.");
-    return;
-  }
-
-  const doc = new jsPDF();
-  const p = detail.patient;
-  const s = detail.dernierSuivi;
-
-  // 2. Configuration esthétique
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(22);
-  doc.text("FICHE PATIENT", 20, 20);
-
-  doc.setDrawColor(0, 0, 0);
-  doc.line(20, 25, 190, 25); // Ligne de séparation
-
-  // 3. Infos Générales
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(12);
-  doc.text(`Nom complet : ${p.patient || 'N/A'}`, 20, 40);
-  doc.text(`Âge : ${p.age || 'N/A'} ans`, 20, 50);
-  doc.text(`Sexe : ${p.sexe || 'N/A'}`, 20, 60);
-  doc.text(`Profession : ${p.profession || 'N/A'}`, 20, 70);
-
-  // 4. Comorbidités
-  doc.setFont("helvetica", "bold");
-  doc.text("Comorbidités :", 20, 90);
-  doc.setFont("helvetica", "normal");
-
-  let y = 100;
-  if (Array.isArray(detail.comorbidites) && detail.comorbidites.length > 0) {
-    detail.comorbidites.forEach((c: any) => {
-      const date = c.date_diagnostic ? new Date(c.date_diagnostic).toLocaleDateString() : 'Date inconnue';
-      doc.text(`• ${c.libelle || 'Inconnu'} (${c.categorie || 'N/A'}) - Diagnostiqué le : ${date}`, 25, y);
-      y += 8;
+  private loadImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = (err) => reject(err);
+      img.src = url;
     });
-  } else {
-    doc.text("Aucune comorbidité enregistrée.", 25, y);
+  }
+  async genererFichierPatientPDF() {
+    const detail = this.patientDetail();
+    if (!detail || !detail.patient || !detail.dernierSuivi) {
+      alert('Données patient indisponibles.');
+      return;
+    }
+
+    const doc = new jsPDF();
+    const p = detail.patient;
+    const s = detail.dernierSuivi;
+    let y = 20; // Point de départ
+
+    // 1. En-tête
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.text('FICHE PATIENT', 20, y);
+    y += 5;
+    doc.line(20, y, 190, y);
+    y += 15;
+
+    // 2. Infos Générales
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.text(`Nom complet : ${p.patient || 'N/A'}`, 20, y);
+    y += 10;
+    doc.text(`Âge : ${p.age || 'N/A'} ans`, 20, y);
+    y += 10;
+    doc.text(`Sexe : ${p.sexe || 'N/A'}`, 20, y);
+    y += 10;
+    doc.text(`Profession : ${p.profession || 'N/A'}`, 20, y);
+    y += 15;
+
+    // 3. Comorbidités
+    doc.setFont('helvetica', 'bold');
+    doc.text('Comorbidités :', 20, y);
     y += 8;
-  }
+    doc.setFont('helvetica', 'normal');
+    if (Array.isArray(detail.comorbidites) && detail.comorbidites.length > 0) {
+      detail.comorbidites.forEach((c: any) => {
+        const date = c.date_diagnostic
+          ? new Date(c.date_diagnostic).toLocaleDateString()
+          : 'Date inconnue';
+        doc.text(`• ${c.libelle} (${c.categorie}) - Diagnostiqué le : ${date}`, 25, y);
+        y += 8;
+      });
+    } else {
+      doc.text('Aucune comorbidité.', 25, y);
+      y += 8;
+    }
 
-  // 5. Dernier suivi
-  y += 10;
-  doc.setFont("helvetica", "bold");
-  doc.text(`Dernier suivi (${s.date_suivi ? new Date(s.date_suivi).toLocaleDateString() : 'N/A'}) :`, 20, y);
+    // 4. Dernier suivi
+    y += 10;
+    doc.setFont('helvetica', 'bold');
+    doc.text(
+      `Dernier suivi (${s.date_suivi ? new Date(s.date_suivi).toLocaleDateString() : 'N/A'}) :`,
+      20,
+      y,
+    );
+    y += 8;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Poids : ${s.poids || '0'} kg | IMC : ${s.imc || 'N/A'}`, 20, y);
+    y += 8;
+    doc.text(`Notes : ${s.notes_evolution || 'Aucune note.'}`, 20, y, { maxWidth: 170 });
+    y += 20; // Espace avant la courbe
 
-  doc.setFont("helvetica", "normal");
-  y += 8;
-  doc.text(`Poids : ${s.poids || '0'} kg  |  IMC : ${s.imc || 'N/A'}`, 20, y);
-  y += 8;
-  doc.text(`Tension : ${s.tension_systolique || '--'}/${s.tension_diastolique || '--'} mmHg`, 20, y);
-  y += 10;
-  doc.text(`Notes : ${s.notes_evolution || 'Aucune note.'}`, 20, y, { maxWidth: 170 });
+    // 5. Ajout de l'image (Courbe)
+    try {
+      const imgUrl = this.getCheminCourbe('debit_nasal', 1);
+      const imgData = await this.loadImage(imgUrl);
 
-  // 6. Téléchargement
-  doc.save(`fiche_patient_${p.id_patient || 'inconnu'}.pdf`);
-}
+      // Si la courbe dépasse la page, on en crée une nouvelle
+      if (y > 200) {
+        doc.addPage();
+        y = 20;
+      }
 
+      doc.setFont('helvetica', 'bold');
+      doc.text('Courbe de débit nasal :', 20, y);
+      doc.addImage(imgData, 'PNG', 20, y + 5, 170, 80);
+    } catch (e) {
+      console.error('Erreur chargement image');
+    }
 
-
-  toggleNuit(idNuit: number) {
-    this.nuitOuverte.set(this.nuitOuverte() === idNuit ? null : idNuit);
-  }
-  iahLabel(iah: number | null): string {
-    if (iah === null || iah === undefined) return 'N/A';
-    if (iah < 5) return `Normal (${iah.toFixed(1)})`;
-    if (iah < 15) return `Léger (${iah.toFixed(1)})`;
-    if (iah < 30) return `Modéré (${iah.toFixed(1)})`;
-    return `⚠ Sévère (${iah.toFixed(1)})`;
-  }
-
-  iahClasse(iah: number | null): string {
-    if (iah === null || iah === undefined) return 'pill-blue';
-    if (iah < 5) return 'pill-green';
-    if (iah < 15) return 'pill-amber';
-    return 'pill-red';
+    doc.save(`fiche_patient_${p.id_patient}.pdf`);
   }
 }

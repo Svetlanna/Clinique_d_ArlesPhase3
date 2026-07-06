@@ -1183,7 +1183,7 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `v_profil_utilisateur` AS select concat(`p`.`prenom`,' ',`p`.`nom`) AS `nom`,`u`.`login` AS `login`,`u`.`mot_de_passe` AS `mot_de_passe`,`u`.`role` AS `role`,`u`.`actif` AS `actif`,`u`.`date_creation` AS `date_creation` from (`utilisateurs` `u` left join `clinique2nuitsv2`.`personnel` `p` on((`u`.`id_personnel` = `p`.`id_personnel`))) */;
+/*!50001 VIEW `v_profil_utilisateur` AS select concat(`p`.`prenom`,' ',`p`.`nom`) AS `nom`,`u`.`login` AS `login`,`u`.`mot_de_passe` AS `mot_de_passe`,`u`.`role` AS `role`,`u`.`actif` AS `actif`,`u`.`date_creation` AS `date_creation` from (`utilisateurs` `u` left join `cliniquearles`.`personnel` `p` on((`u`.`id_personnel` = `p`.`id_personnel`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;

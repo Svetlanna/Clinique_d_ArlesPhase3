@@ -8,7 +8,8 @@ import {
     getAllNuitEtude,
     updateNuit,
     getAllNuits,
-    updateCommentaire
+    updateCommentaire,
+    updateMedecin
 } from "../controllers/nuitController.js";
 
 const router = express.Router();
@@ -20,5 +21,6 @@ router.get('/', getAllNuitEtude);
 router.get('/:id/run', getNuitData);
 router.get('/:id/stats', getStats);
 router.put('/:id/update', updateNuit);
+router.patch('/:id/medecin', updateMedecin);
 
 export default router;
