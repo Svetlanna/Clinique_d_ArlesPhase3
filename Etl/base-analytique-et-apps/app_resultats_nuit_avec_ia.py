@@ -5,7 +5,7 @@ Application Streamlit pour les résultats des nuits avec prédiction de comorbid
 import streamlit as st
 import pandas as pd
 from pathlib import Path
-import mysql.connector
+import pymysql
 from datetime import datetime
 from dotenv import load_dotenv
 import os
@@ -19,12 +19,13 @@ st.title("Résultats des Nuits d'Étude")
 st.markdown("**Clinique du Sommeil d'Arles**")
 
 load_dotenv()
-myconn = mysql.connector.connect(
+myconn = pymysql.connect(
     host=os.environ.get("DB_HOST", "localhost"),
     user=os.environ.get("DB_USER", "root"),
     port=int(os.environ.get("DB_PORT", "3306")),
     password=os.environ.get("DB_PASSWORD", "123456789"),
-    database=os.environ.get("DB_NAME", "cliniquearles")
+    database=os.environ.get("DB_NAME", "cliniquearles"),
+    cursorclass=pymysql.cursors.DictCursor,
 )
 
 

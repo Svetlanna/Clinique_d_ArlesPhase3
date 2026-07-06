@@ -18,7 +18,7 @@ import os
 import sys
 from pathlib import Path
 
-import mysql.connector
+import pymysql
 import pandas as pd
 from dotenv import load_dotenv
 
@@ -28,12 +28,13 @@ OUTPUTS_DIR = BASE_DIR / "outputs"
 
 def get_mysql_connection():
     load_dotenv()
-    return mysql.connector.connect(
+    return pymysql.connect(
         host=os.environ.get("DB_HOST", "localhost"),
         user=os.environ.get("DB_USER", "root"),
         port=int(os.environ.get("DB_PORT", "3306")),
         password=os.environ.get("DB_PASSWORD", "123456789"),
         database=os.environ.get("DB_NAME", "cliniquearles"),
+        cursorclass=pymysql.cursors.DictCursor,
     )
 
 

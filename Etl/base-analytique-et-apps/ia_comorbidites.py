@@ -16,7 +16,7 @@ nos deux schémas :
 
 from pathlib import Path
 import pandas as pd
-import mysql.connector
+import pymysql
 import sqlite3
 import streamlit as st
 import joblib
@@ -34,12 +34,13 @@ import os
 
 load_dotenv()
 
-myconn = mysql.connector.connect(
+myconn = pymysql.connect(
     host=os.environ.get("DB_HOST", "localhost"),
     user=os.environ.get("DB_USER", "root"),
     port=int(os.environ.get("DB_PORT", "3306")),
     password=os.environ.get("DB_PASSWORD", "123456789"),
-    database=os.environ.get("DB_NAME", "cliniquearles"))
+    database=os.environ.get("DB_NAME", "cliniquearles"),
+    cursorclass=pymysql.cursors.DictCursor)
     
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
