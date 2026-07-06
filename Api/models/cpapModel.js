@@ -9,9 +9,6 @@ const db = new Database(path.join(__dirname, '../../etl2/base_analytique.db'));
 
 export const getAllCpap = () => {
 const rows = db.prepare('SELECT * FROM faits_suivi_cpap_jour').all();
-export const getAllCpap = () => {
-const rows = db.prepare('SELECT * FROM faits_suivi_cpap_jour').all();
-return rows;
 }
 
 const lireCsvSuiviCpap = (idPatient, idAppareil) => new Promise((resolve, reject) => {
