@@ -2,7 +2,7 @@ import pandas as pd
 import sqlite3
 from dotenv import load_dotenv
 import os
-import mysql.connector
+import pymysql
 import re
 from pathlib import Path
 
@@ -33,7 +33,7 @@ def init_db():
     return conn
 
 load_dotenv()
-myconn = mysql.connector.connect(
+myconn = pymysql.connect(
     host=os.environ.get("DB_HOST", "localhost"),
     user=os.environ.get("DB_USER", "root"),
     port=int(os.environ.get("DB_PORT", "3306")),
@@ -128,7 +128,7 @@ def extract_donnees(id_patient : int, id_appareil : int):
         #il y a potentiellement besoin de remplir la table dim_suivi_patient mais c'est trop long (FLEMME) 
         
 
-        cur_mysql = myconn.cursor(buffered=True)
+        cur_mysql = myconn.cursor()
         
         cur_mysql.execute("Select id_suivi from suivi_patient where id_patient = %s", (id_patient,))
         #il faut faire une autre fonction pour voir si l'id_suivi existe sur MYSQL mais comme la bdd n'est pas a jour avec le projet surtout que le front n'est pas encore fini je laisse tomber pour maintenant
