@@ -6,8 +6,15 @@ import { recupererDonnees } from '../etl/extract.js';
 import { calculerIndicateurs } from '../etl/transform.js';
 
 export const getAllNuits = async () => {
-    const [rows] = await pool.execute('SELECT * FROM resultat_nuit');
+    const [rows] = await pool.execute('SELECT * FROM `vue_resultat_nuit`');
     return rows;
+};
+
+export const updateMedecin = async(idNuit,idMedecin) =>{
+    await pool.execute(
+        'UPDATE resultat_nuit SET id_medecin_validateur = ? WHERE id_nuit=?',
+        [idMedecin,idNuit]
+    );
 };
 
 export const updateCommentaire = async (idNuit, commentaire) => {
