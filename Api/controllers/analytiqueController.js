@@ -10,7 +10,9 @@ import { importCsvSuiviCpap } from '../models/cpapModel.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ETL_DIR = path.resolve(__dirname, '../../Etl/base-analytique-et-apps');
-const PYTHON_BIN = path.resolve(__dirname, '../../Etl/.venv/bin/python3');
+const PYTHON_BIN = process.platform === 'win32'
+    ? path.resolve(__dirname, '../../Etl/.venv/Scripts/python.exe')
+    : path.resolve(__dirname, '../../Etl/.venv/bin/python3');
 
 const runPythonScript = (scriptName, args) => new Promise((resolve, reject) => {
     const scriptPath = path.join(ETL_DIR, scriptName);
