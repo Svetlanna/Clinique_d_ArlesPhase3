@@ -1,0 +1,19 @@
+<?xml version="1.0" standalone="yes"?>
+<dataroot xmlns:od="urn:schemas-microsoft-com:officedata">
+<dim_comorbidite><id_comorbidite>1</id_comorbidite><libelle>Hypertension&#160;artérielle&#160;(HTA)</libelle><categorie>cardiovasculaire</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>2</id_comorbidite><libelle>Diabète&#160;de&#160;type&#160;2</libelle><categorie>métabolique</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>3</id_comorbidite><libelle>Obésité</libelle><categorie>métabolique</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>4</id_comorbidite><libelle>Insuffisance&#160;cardiaque</libelle><categorie>cardiovasculaire</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>5</id_comorbidite><libelle>Fibrillation&#160;auriculaire</libelle><categorie>cardiovasculaire</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>6</id_comorbidite><libelle>BPCO</libelle><categorie>respiratoire</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>7</id_comorbidite><libelle>Asthme</libelle><categorie>respiratoire</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>8</id_comorbidite><libelle>Hypothyroïdie</libelle><categorie>métabolique</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>9</id_comorbidite><libelle>Dépression</libelle><categorie>psychiatrique</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>10</id_comorbidite><libelle>Anxiété</libelle><categorie>psychiatrique</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>11</id_comorbidite><libelle>Reflux&#160;gastro-oesophagien&#160;(RGO)</libelle><categorie>autre</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>12</id_comorbidite><libelle>Syndrome&#160;métabolique</libelle><categorie>métabolique</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>13</id_comorbidite><libelle>Insuffisance&#160;rénale&#160;chronique</libelle><categorie>autre</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>14</id_comorbidite><libelle>Dyslipidémie</libelle><categorie>métabolique</categorie></dim_comorbidite>
+<dim_comorbidite><id_comorbidite>15</id_comorbidite><categorie>cardiovasculaire</categorie></dim_comorbidite>
+<dim_comorbidite></dim_comorbidite>
+</dataroot>

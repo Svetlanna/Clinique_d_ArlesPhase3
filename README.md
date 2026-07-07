@@ -13,18 +13,6 @@
 
 Ce projet consiste en un prototype de DPI complet  intégrant des briques IA pour assurer la supervision des nuits d'études au sein de la clinique du sommeil d'Arles (fictif).
 
-## État réel du projet
-
-Statut par brique (branche `tempdev`, au 03/07/2026) :
-
-- **App Opérateur/Médecin (Front + Api)** : authentification, dashboard, appareils, médecins, CPAP dashboard et la page Nuits Patients (`/nuitspatients`) sont fonctionnels et branchés sur l'API MySQL. La page `test-operateur` reste routée mais n'affiche que des données statiques (doublon de Nuits Patients, à retirer du routing).
-- **Résultats Nuit (Front Angular)** : page encore en mock (3 nuits codées en dur, pas d'appel API, pas de validation de diagnostic ni de génération de PDF).
-- **Dashboard CPAP (Etl)** : fonctionnel via `streamlit run Etl/base-analytique-et-apps/Dashboard_CPAP/dashboard_main.py`, lit la base analytique SQLite.
-- **Résultats de nuit avec IA (Etl)** : fonctionnel via `streamlit run Etl/base-analytique-et-apps/app_resultats_nuit_avec_ia.py`. Les 5 modèles de prédiction de comorbidités sont entraînés (`models/*.pkl`). Cette app Python est indépendante du Front Angular, pas encore reliée.
-- **Mini ETL CPAP** (`etl2/extract2.py`, `transform2.py`, `load2.py`) : fonctionnel, calcule les alertes observance/IAH et alimente `faits_suivi_cpap_jour`. `id_patient`/`id_appareil` restent codés en dur dans `extract2.py`.
-- **Base analytique SQLite** : schéma en galaxie complet (`faits_nuits`, `dim_patient`, `dim_nuit`, `dim_temps`, `dim_suivi_patient`, etc.) présent à la racine (`base_analytique.db`). Aucun diagramme du schéma n'a encore été produit.
-- **Manque encore** : rapport pédagogique de fin de projet, diagramme du schéma en galaxie, et une librairie de génération PDF (absente côté `Api/package.json` comme côté Python), nécessaire pour finaliser la validation de diagnostic sur la page Résultats Nuit.
-
 ## Utilisation
 
 | N° étape | Description | Illustration |
@@ -35,7 +23,21 @@ Statut par brique (branche `tempdev`, au 03/07/2026) :
 
 ## UML / Diagramme d'utilisation
 
-_(non produit pour le moment)_
+![image](diagram/diagram_projet.drawio.png)
+
+## Diagramme base de données :
+
+### 1. Base MySQL
+
+![image](diagram/mld_mysql/schema_bdd_leger.jpg)
+
+### 2. Datalake
+
+![image](diagram/mld_datalake/schema_bdd_datalake.jpg) 
+
+### 3. Base analytique
+
+![image](diagram/mld_base_analytique/schema_bdd_analytique.jpg)
 
 # Installation
 ### 1. Initialiser les bases de données

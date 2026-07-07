@@ -1,0 +1,5 @@
+<?xml version="1.0" standalone="yes"?>
+<dataroot xmlns:od="urn:schemas-microsoft-com:officedata">
+<curated_nuit><id_curated>2</id_curated><id_nuit>2</id_nuit><spo2_min>88.7</spo2_min><spo2_moy>96.7863888888889</spo2_moy><spo2_mediane>97</spo2_mediane><nb_apnees>0</nb_apnees><nb_hypopnees>0</nb_hypopnees><IAH>0</IAH><nb_rera>8</nb_rera><nb_microeveils>63</nb_microeveils><dureehypoxiemin>0.666666666666667</dureehypoxiemin><position_dominante>latérale</position_dominante><decibels_max>59.8</decibels_max><decibels_moy>38.9061111111111</decibels_moy><nbronflementsforts>0</nbronflementsforts></curated_nuit>
+<curated_nuit></curated_nuit>
+</dataroot>

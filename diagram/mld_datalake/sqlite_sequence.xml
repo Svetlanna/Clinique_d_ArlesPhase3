@@ -1,0 +1,6 @@
+<?xml version="1.0" standalone="yes"?>
+<dataroot xmlns:od="urn:schemas-microsoft-com:officedata">
+<sqlite_sequence><name>raw_capteur</name><seq>720</seq></sqlite_sequence>
+<sqlite_sequence><name>curated_nuit</name><seq>2</seq></sqlite_sequence>
+<sqlite_sequence></sqlite_sequence>
+</dataroot>

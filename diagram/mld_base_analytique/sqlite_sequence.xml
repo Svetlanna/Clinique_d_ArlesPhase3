@@ -1,0 +1,8 @@
+<?xml version="1.0" standalone="yes"?>
+<dataroot xmlns:od="urn:schemas-microsoft-com:officedata">
+<sqlite_sequence><name>faits_nuits</name><seq>41</seq></sqlite_sequence>
+<sqlite_sequence><name>faits_evenements</name><seq>585</seq></sqlite_sequence>
+<sqlite_sequence><name>faits_suivi_cpap_jour</name><seq>2310</seq></sqlite_sequence>
+<sqlite_sequence><name>faits_bilan_cpap_mois</name><seq>90</seq></sqlite_sequence>
+<sqlite_sequence></sqlite_sequence>
+</dataroot>
