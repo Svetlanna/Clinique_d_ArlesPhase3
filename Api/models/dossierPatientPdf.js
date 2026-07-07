@@ -7,8 +7,21 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const DOSSIERS_DIR = path.join(__dirname, '../data/dossiers-patients');
+// Courbes générées par l'ETL Python (Etl/etl/load.py -> sauvegarder_resultats).
+const COURBES_NUIT_DIR = path.join(__dirname, '../../Etl/outputs');
 
 const formatValeur = (valeur, unite = '') => (valeur === null || valeur === undefined ? 'N/A' : `${valeur}${unite}`);
+
+// Ajoute une page avec la courbe si le PNG existe, sinon ne fait rien
+// (les courbes ne sont générées par l'ETL que pour les nuits déjà traitées).
+const ajouterCourbeSiPresente = (doc, nomFichier, titre) => {
+    const cheminImage = path.join(COURBES_NUIT_DIR, nomFichier);
+    if (!fs.existsSync(cheminImage)) return;
+    doc.addPage();
+    doc.fontSize(13).text(titre, { underline: true });
+    doc.moveDown(0.5);
+    doc.image(cheminImage, { fit: [500, 350], align: 'center' });
+};
 
 // Génère le PDF du dossier patient (identité, nuit étudiée, indicateurs
 // cliniques, validation médicale) suite à la validation du diagnostic.
@@ -65,6 +78,10 @@ export const genererDossierPatientPdf = ({ patient, nuit, medecinValidateur, ind
     doc.moveDown(0.5);
     doc.text('Commentaire médical :');
     doc.text(commentaire || 'Aucun commentaire.');
+
+    ajouterCourbeSiPresente(doc, `courbe_spo2_nuit_${nuit.id_nuit}.png`, `Courbe SpO2 - Nuit ${nuit.id_nuit}`);
+    ajouterCourbeSiPresente(doc, `courbe_debit_nasal_nuit_${nuit.id_nuit}.png`, `Courbe débit nasal - Nuit ${nuit.id_nuit}`);
+    ajouterCourbeSiPresente(doc, `ronflements${nuit.id_nuit}_vs_temps.png`, `Ronflements - Nuit ${nuit.id_nuit}`);
 
     doc.end();
 

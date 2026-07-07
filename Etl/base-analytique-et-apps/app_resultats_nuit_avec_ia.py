@@ -254,6 +254,38 @@ if not df_liste.empty:
                     "Ouvrir la fiche patient dans CliniquePlus",
                     f"{ANGULAR_BASE_URL}/nuitspatients",
                 )
+
+            st.markdown("")
+            st.caption(
+                "Recalcule les indicateurs depuis les capteurs, enregistre le résultat "
+                "de nuit, synchronise la galaxie et génère le PDF du dossier patient."
+            )
+            if df_medecins.empty:
+                st.warning("Impossible de valider : aucun médecin trouvé.")
+            elif st.button("Valider le diagnostic (génère le PDF)", key=f"btn_valider_{selected_id}", type="primary"):
+                try:
+                    reponse = requests.post(
+                        f"{API_BASE_URL}/api/analytique/resultats-nuit/{selected_id}/valider",
+                        json={"id_medecin_validateur": int(medecin_id), "commentaire": commentaire},
+                        timeout=30,
+                    )
+                    reponse.raise_for_status()
+                    data = reponse.json()["data"]
+                    st.success(
+                        f"Diagnostic validé (IAH {data['indicateurs']['iah']} - "
+                        f"sévérité {data['indicateurs']['severite_iah']}). "
+                        f"PDF généré : {data['chemin_pdf']}"
+                    )
+                    get_resultats.clear()
+                    get_liste_nuits.clear()
+                except requests.exceptions.RequestException as e:
+                    detail_err = ""
+                    if e.response is not None:
+                        try:
+                            detail_err = e.response.json().get("message", "")
+                        except ValueError:
+                            detail_err = e.response.text
+                    st.error(f"Échec de la validation : {detail_err or e}")
         else:
             st.error("Impossible de charger le détail de la nuit.")
 else:
