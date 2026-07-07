@@ -7,10 +7,6 @@ const __dirname = path.dirname(__filename);
 
 const db = new Database(path.join(__dirname, '../../etl2/base_analytique.db'));
 
-export const getAllCpap = () => {
-const rows = db.prepare('SELECT * FROM faits_suivi_cpap_jour').all();
-}
-
 const lireCsvSuiviCpap = (idPatient, idAppareil) => new Promise((resolve, reject) => {
     const cheminCsv = path.join(RAW_CPAP_DIR, `signal-cpap-patient-${idPatient}-appareil-${idAppareil}.csv`);
     if (!fs.existsSync(cheminCsv)) {

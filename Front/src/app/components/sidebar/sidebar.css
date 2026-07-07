@@ -91,6 +91,7 @@
     cursor: pointer; font-size: 13px;
     color: var(--text-secondary);
     border: none; background: none; width: 100%; text-align: left;
+    text-decoration: none; box-sizing: border-box;
     transition: background .12s, color .12s;
   }
 

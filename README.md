@@ -43,7 +43,7 @@ Ce projet consiste en un prototype de DPI complet  intégrant des briques IA pou
 ### 1. Initialiser les bases de données
 Ce projet dipose de deux bases de données :
 - Une base MySQL opérationnelle (`cliniquearles`), utilisée par l'Api Express.
-- Un datalake SQLite analytique en modèle galaxie/constellation, utilisé par les apps Streamlit du dossier `Etl/` et par la page CPAP Dashboard du Front (via `Api/models/cpapModel.js`).
+- Un datalake SQLite analytique en modèle galaxie/constellation, utilisé par les apps Streamlit du dossier `Etl/` et par le mini ETL CPAP de l'Api (`POST /api/analytique/cpap/import`, via `Api/models/cpapModel.js`).
 
 **Base MySQL** : dans un schéma vierge nommé `cliniquearles`, exécutez dans l'ordre :
 1. [Api/dbmigration.sql](Api/dbmigration.sql) — schéma + données de démo (dump le plus à jour, à privilégier sur `clinique2nuitsv2.sql` qui est une version antérieure du même dump).
@@ -53,7 +53,7 @@ Ce projet dipose de deux bases de données :
 
 **Datalake SQLite** : les fichiers `.db` sont ignorés par git (`.gitignore`), donc absents d'un clone fraîchement cloné. Il n'y a pas de script qui reconstruit le schéma complet de la galaxie depuis zéro dans ce dépôt (seul `etl2/extract2.py` sait créer/alimenter la table `faits_suivi_cpap_jour`) — récupérez un `base_analytique.db` pré-rempli auprès de l'équipe et placez-le à deux endroits :
 - `base_analytique.db` à la racine (lu par les apps Streamlit de `Etl/`)
-- `etl2/base_analytique.db` (lu par `Api/models/cpapModel.js` pour la page CPAP Dashboard)
+- `etl2/base_analytique.db` (alimenté par `Api/models/cpapModel.js` lors du mini ETL CPAP)
 
 Ce sont deux copies indépendantes du même fichier, sans synchronisation automatique : si vous relancez `etl2/extract2.py`, pensez à recopier le fichier mis à jour vers la racine pour que les apps Streamlit voient les nouvelles données.
 
@@ -109,15 +109,18 @@ cd Front/
 ng serve
 ```
 
-Optionnel, les deux apps Streamlit du dossier `Etl/` (base analytique déjà initialisée requise, cf. étape 1) :
+Les deux apps Streamlit du dossier `Etl/` (base analytique déjà initialisée requise, cf. étape 1) sont accessibles depuis des boutons de la sidebar Angular (rubriques "Résultats nuit (IA)" et "Suivi CPAP", selon rôle) : elles doivent donc tourner sur des ports fixes distincts pour que ces liens fonctionnent.
+
 ```bash
 cd Etl/base-analytique-et-apps/Dashboard_CPAP
-streamlit run dashboard_main.py
+streamlit run dashboard_main.py --server.port 8501
 ```
 ```bash
 cd Etl/base-analytique-et-apps
-streamlit run app_resultats_nuit_avec_ia.py
+streamlit run app_resultats_nuit_avec_ia.py --server.port 8502
 ```
+
+Depuis l'app "Résultats des Nuits d'Étude", le bouton **Valider le diagnostic** appelle directement `POST /api/analytique/resultats-nuit/:id_nuit/valider` sur l'Api Express (nécessite donc l'Api démarrée sur `http://localhost:3000`) ; le bouton **Ouvrir la fiche patient dans CliniquePlus** ramène vers le Front Angular (`http://localhost:4200`).
 
 Et pour rejouer le mini ETL CPAP (lit `etl2/raw_cpap/*.csv`, alimente `faits_suivi_cpap_jour`) :
 ```bash

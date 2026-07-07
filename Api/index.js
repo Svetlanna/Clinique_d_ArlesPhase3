@@ -6,7 +6,6 @@ import MedecinsRoute from './routes/MedecinsRoute.js';
 import appareilRoutes from './routes/appareilRoutes.js';
 import analytiqueRoutes from './routes/analytiqueRoutes.js';
 import { medecineRoute } from "./controllers/medecineController.js";
-import cpapRoutes from './routes/cpapRoutes.js';
 
 import authRoutes from './routes/authRoutes.js';
 
@@ -19,7 +18,6 @@ app.use('/api/nuit', nuitRoutes);
 app.use('/api/med', MedecinsRoute);
 app.use('/api/appareil', appareilRoutes);
 app.use('/api/analytique', analytiqueRoutes);
-app.use('/api/cpap', cpapRoutes);
 
 // 2. REGISTER THE AUTH ROUTE
 app.use('/auth', authRoutes);
