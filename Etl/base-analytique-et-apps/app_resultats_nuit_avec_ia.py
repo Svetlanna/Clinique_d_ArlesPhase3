@@ -134,7 +134,11 @@ if not df_liste.empty:
             rapport_path = NUITS_DIR / f"rapport_medecin_nuit_{(selected_id)}.txt"
             if rapport_path.exists():
                 st.subheader(" Rapport médical complet")
-                st.text_area("Rapport médical", rapport_path.read_text(encoding="utf-8"), height=450)
+                try:
+                    rapport_text = rapport_path.read_text(encoding="utf-8")
+                except UnicodeDecodeError:
+                    rapport_text = rapport_path.read_text(encoding="cp1252")
+                st.text_area("Rapport médical", rapport_text, height=450)
             else:
                 st.warning(f"Rapport non trouvé pour la nuit {selected_id}")
 

@@ -186,7 +186,7 @@ def sauvegarder_resultats(indicateurs, id_nuit, df_capteur):
     print(f"(load.py) DEBUG: {count} ligne(s) trouvée(s) pour la nuit {id_nuit} dans {db_path}")
     rapport_path = os.path.join(output_dir, f"rapport_medecin_nuit_{id_nuit}.txt")
 
-    with open(rapport_path, "w") as f:
+    with open(rapport_path, "w", encoding="utf-8") as f:
         f.write(f"RAPPORT MEDECIN - Nuit {id_nuit}\n")
         f.write(f"Evolution SPO2/min: {indicateurs.get('spo2_min', 0.0)}\n")
         f.write(f"SPO2 Moyen : {indicateurs.get('spo2_moy', 0.0)}\n")
