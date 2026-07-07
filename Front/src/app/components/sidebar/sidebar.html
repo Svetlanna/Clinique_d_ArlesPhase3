@@ -9,40 +9,31 @@
     <button class="sb-item" routerLink="/dashboard" routerLinkActive="active">
       <i class="ti ti-layout-dashboard" aria-hidden="true"></i>Tableau de bord
     </button>
-    <a class="sb-item" [href]="urlResultatsNuitIA" target="_blank" rel="noopener">
-      <i class="ti ti-moon" aria-hidden="true"></i>Résultats nuit (IA)
-    </a>
-    <button class="sb-item" routerLink="/nuitspatients" routerLinkActive="active">
-      <i class="ti ti-terminal-2" aria-hidden="true"></i>Nuits Patients
-    </button>
   </div>
 
   @if (showMedecin()) {
     <div class="sb-section">
       <div class="sb-label">Médecin</div>
-      <button class="sb-item" routerLink="/test-medecin" routerLinkActive="active">
-        <i class="ti ti-stethoscope" aria-hidden="true"></i>Espace médecin
+      <button class="sb-item" routerLink="/nuitspatients" routerLinkActive="active">
+        <i class="ti ti-terminal-2" aria-hidden="true"></i>Liste des nuits
       </button>
       <a class="sb-item" [href]="urlDashboardCpap" target="_blank" rel="noopener">
-        <i class="ti ti-heart" aria-hidden="true"></i>Suivi CPAP
+        <i class="ti ti-heart" aria-hidden="true"></i>Tableau de bord CPAP
       </a>
-      <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
-        <i class="ti ti-shopping-bag" aria-hidden="true"></i>Les médecins
-      </button>
     </div>
   }
 
   @if (showOperateur()) {
     <div class="sb-section">
       <div class="sb-label">Opérateur</div>
-      <button class="sb-item" routerLink="/test-operateur" routerLinkActive="active">
-        <i class="ti ti-settings-2" aria-hidden="true"></i>Espace opérateur
-      </button>
       <button class="sb-item" routerLink="/appareils" routerLinkActive="active">
-        <i class="ti ti-device-laptop" aria-hidden="true"></i>Appareils
+        <i class="ti ti-device-laptop" aria-hidden="true"></i>Liste des appareils
       </button>
+      <a class="sb-item" [href]="urlResultatsNuitIA" target="_blank" rel="noopener">
+        <i class="ti ti-moon" aria-hidden="true"></i>Résultats nuit (Validation)
+      </a>
       <button class="sb-item" routerLink="/medecines" routerLinkActive="active">
-        <i class="ti ti-shopping-bag" aria-hidden="true"></i>Les médecins
+        <i class="ti ti-shopping-bag" aria-hidden="true"></i>Liste des médecins
       </button>
     </div>
   }

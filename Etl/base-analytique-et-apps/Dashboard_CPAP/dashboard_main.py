@@ -11,12 +11,12 @@ from Onglets.onglet_ia_cpap import show_ia_cpap
 # ============================================================
 def main():
     st.set_page_config(
-        page_title="Dashboard Clinique du Sommeil",
+        page_title="Dashboard CPAP - Clinique du Sommeil",
         page_icon="🌌",
         layout="wide"
     )
 
-    st.title("🌌 Dashboard Clinique Modèle Galaxy")
+    st.title("🌌 Dashboard CPAP - Modèle Galaxy")
     st.markdown("---")
 
     # Onglets

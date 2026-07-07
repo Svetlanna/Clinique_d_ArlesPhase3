@@ -50,15 +50,6 @@ export class AuthService {
         this.nuits.set(reponse.data)}));
       }
   
-  updateCommentaire(idNuit: number, commentaire: string) {
-    return this.http
-      .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/commentaire`, { commentaire });
-  }
-  updateMedecin(idNuit : number, idMedecin : number) {
-    return this.http
-    .patch<any>(`http://localhost:3000/api/nuit/${idNuit}/medecin`,{idMedecin});
-  }
-
   logout() {
     this.currentUser.set(null);
     this.localService.logout();

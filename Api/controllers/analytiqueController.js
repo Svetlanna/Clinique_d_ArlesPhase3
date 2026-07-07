@@ -5,6 +5,7 @@ import { pool } from '../config/db.js';
 import { syncNuitDansGalaxie, computeSeveriteIah } from '../models/analytiqueModel.js';
 import { toDateStr } from '../models/galaxieDimensions.js';
 import { importCsvSuiviCpap } from '../models/cpapModel.js';
+import { genererDossierPatientPdf } from '../models/dossierPatientPdf.js';
 
 const lireCapteursNuit = (idPatient, idNuit) => new Promise((resolve, reject) => {
     const cheminCsv = path.join(process.cwd(), 'raw', 'traite', `signal-psg-patient-${idPatient}-nuit-${idNuit}.csv`);
@@ -181,9 +182,18 @@ export const validerDiagnosticNuit = async (req, res) => {
 
         const galaxie = syncNuitDansGalaxie({ patient, nuit: nuitInfo, indicateurs });
 
+        const chemin_pdf = await genererDossierPatientPdf({
+            patient,
+            nuit: nuitInfo,
+            medecinValidateur,
+            indicateurs,
+            severite_iah,
+            commentaire: commentaireFinal,
+        });
+
         res.status(200).json({
             status: 'success',
-            data: { id_nuit, indicateurs: { ...indicateurs, severite_iah }, galaxie },
+            data: { id_nuit, indicateurs: { ...indicateurs, severite_iah }, galaxie, chemin_pdf },
         });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });

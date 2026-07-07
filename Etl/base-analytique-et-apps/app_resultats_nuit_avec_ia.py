@@ -177,48 +177,77 @@ if not df_liste.empty:
                         col.warning(f"{img} manquant")
 
             # =============================================================
-            # OPÉRATION : VALIDATION DU DIAGNOSTIC (via l'Api Express)
+            # OPÉRATION : VALIDATION DU DIAGNOSTIC
+            # Même logique que la page Angular /nuitspatients : deux actions
+            # indépendantes (médecin validateur / commentaire), chacune un
+            # simple PATCH sur resultat_nuit, sans recalcul des indicateurs.
             # =============================================================
             st.markdown("---")
             st.subheader("Valider le diagnostic")
 
             df_medecins = get_medecins()
-            col_valid, col_redirect = st.columns([2, 1])
+            col_medecin, col_commentaire, col_redirect = st.columns([1, 1, 1])
 
-            with col_valid:
+            medecin_actuel = int(detail['id_medecin'].iloc[0]) if 'id_medecin' in detail.columns and pd.notna(detail['id_medecin'].iloc[0]) else None
+            commentaire_actuel = detail['commentaire_medical'].iloc[0] if 'commentaire_medical' in detail.columns and pd.notna(detail['commentaire_medical'].iloc[0]) else ""
+
+            with col_medecin:
                 if df_medecins.empty:
-                    st.warning("Aucun médecin trouvé pour valider ce diagnostic.")
+                    st.warning("Aucun médecin trouvé.")
                 else:
+                    medecins_ids = df_medecins['id_personnel'].tolist()
                     medecin_id = st.selectbox(
                         "Médecin validateur",
-                        options=df_medecins['id_personnel'].tolist(),
+                        options=medecins_ids,
+                        index=medecins_ids.index(medecin_actuel) if medecin_actuel in medecins_ids else 0,
                         format_func=lambda x: f"Dr {df_medecins[df_medecins['id_personnel']==x]['nom'].iloc[0]} {df_medecins[df_medecins['id_personnel']==x]['prenom'].iloc[0]}",
                         key=f"medecin_validateur_{selected_id}",
                     )
-                    commentaire = st.text_area("Commentaire médical", key=f"commentaire_{selected_id}")
 
-                    if st.button("Valider le diagnostic", type="primary"):
+                    if st.button("Enregistrer le médecin", key=f"btn_medecin_{selected_id}"):
                         try:
-                            reponse = requests.post(
-                                f"{API_BASE_URL}/api/analytique/resultats-nuit/{selected_id}/valider",
-                                json={
-                                    "id_medecin_validateur": int(medecin_id),
-                                    "commentaire": commentaire or None,
-                                },
+                            reponse = requests.patch(
+                                f"{API_BASE_URL}/api/nuit/{selected_id}/medecin",
+                                json={"idMedecin": int(medecin_id)},
                                 timeout=15,
                             )
                             reponse.raise_for_status()
-                            st.success("Diagnostic validé avec succès.")
+                            st.success("Médecin validateur enregistré.")
                             get_resultats.clear()
-                            get_liste_nuits.clear()
                         except requests.exceptions.RequestException as e:
-                            detail = ""
+                            detail_err = ""
                             if e.response is not None:
                                 try:
-                                    detail = e.response.json().get("message", "")
+                                    detail_err = e.response.json().get("message", "")
                                 except ValueError:
-                                    detail = e.response.text
-                            st.error(f"Échec de la validation : {detail or e}")
+                                    detail_err = e.response.text
+                            st.error(f"Échec de l'enregistrement : {detail_err or e}")
+
+            with col_commentaire:
+                commentaire = st.text_area(
+                    "Commentaire médical",
+                    value=commentaire_actuel,
+                    key=f"commentaire_{selected_id}",
+                )
+
+                if st.button("Enregistrer le commentaire", key=f"btn_commentaire_{selected_id}"):
+                    try:
+                        reponse = requests.patch(
+                            f"{API_BASE_URL}/api/nuit/{selected_id}/commentaire",
+                            json={"commentaire": commentaire},
+                            timeout=15,
+                        )
+                        reponse.raise_for_status()
+                        st.success("Commentaire enregistré.")
+                        get_resultats.clear()
+                    except requests.exceptions.RequestException as e:
+                        detail_err = ""
+                        if e.response is not None:
+                            try:
+                                detail_err = e.response.json().get("message", "")
+                            except ValueError:
+                                detail_err = e.response.text
+                        st.error(f"Échec de l'enregistrement : {detail_err or e}")
 
             with col_redirect:
                 st.link_button(
