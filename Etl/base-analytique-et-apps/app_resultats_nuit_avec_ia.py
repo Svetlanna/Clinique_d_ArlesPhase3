@@ -25,7 +25,6 @@ myconn = pymysql.connect(
     port=int(os.environ.get("DB_PORT", "3306")),
     password=os.environ.get("DB_PASSWORD", "123456789"),
     database=os.environ.get("DB_NAME", "cliniquearles"),
-    cursorclass=pymysql.cursors.DictCursor,
 )
 
 

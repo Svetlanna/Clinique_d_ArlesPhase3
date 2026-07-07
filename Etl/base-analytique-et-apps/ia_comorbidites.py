@@ -39,8 +39,7 @@ myconn = pymysql.connect(
     user=os.environ.get("DB_USER", "root"),
     port=int(os.environ.get("DB_PORT", "3306")),
     password=os.environ.get("DB_PASSWORD", "123456789"),
-    database=os.environ.get("DB_NAME", "cliniquearles"),
-    cursorclass=pymysql.cursors.DictCursor)
+    database=os.environ.get("DB_NAME", "cliniquearles"))
     
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
