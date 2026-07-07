@@ -6,6 +6,7 @@ import streamlit as st
 import pandas as pd
 from pathlib import Path
 import pymysql
+import requests
 from datetime import datetime
 from dotenv import load_dotenv
 import os
@@ -14,6 +15,9 @@ import os
 from ia_comorbidites import get_comorbidite_probable, afficher_prediction_comorbidites
 
 # ====================== CONFIG ======================
+API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:3000")
+ANGULAR_BASE_URL = os.environ.get("ANGULAR_BASE_URL", "http://localhost:4200")
+
 st.set_page_config(page_title="Clinique du Sommeil", layout="wide")
 st.title("Résultats des Nuits d'Étude")
 st.markdown("**Clinique du Sommeil d'Arles**")
@@ -56,6 +60,19 @@ def get_liste_nuits():
         return df
     except Exception as e:
         st.error(f"Erreur liste nuits : {e}")
+        return pd.DataFrame()
+
+@st.cache_data
+def get_medecins():
+    try:
+        return pd.read_sql("""
+            SELECT m.id_personnel, pm.nom, pm.prenom
+            FROM medecin m
+            JOIN personnel pm ON pm.id_personnel = m.id_personnel
+            ORDER BY pm.nom
+        """, myconn)
+    except Exception as e:
+        st.error(f"Erreur liste médecins : {e}")
         return pd.DataFrame()
 
 df_liste = get_liste_nuits()
@@ -158,6 +175,56 @@ if not df_liste.empty:
                         col.image(str(path), caption=title, width="stretch")
                     else:
                         col.warning(f"{img} manquant")
+
+            # =============================================================
+            # OPÉRATION : VALIDATION DU DIAGNOSTIC (via l'Api Express)
+            # =============================================================
+            st.markdown("---")
+            st.subheader("Valider le diagnostic")
+
+            df_medecins = get_medecins()
+            col_valid, col_redirect = st.columns([2, 1])
+
+            with col_valid:
+                if df_medecins.empty:
+                    st.warning("Aucun médecin trouvé pour valider ce diagnostic.")
+                else:
+                    medecin_id = st.selectbox(
+                        "Médecin validateur",
+                        options=df_medecins['id_personnel'].tolist(),
+                        format_func=lambda x: f"Dr {df_medecins[df_medecins['id_personnel']==x]['nom'].iloc[0]} {df_medecins[df_medecins['id_personnel']==x]['prenom'].iloc[0]}",
+                        key=f"medecin_validateur_{selected_id}",
+                    )
+                    commentaire = st.text_area("Commentaire médical", key=f"commentaire_{selected_id}")
+
+                    if st.button("Valider le diagnostic", type="primary"):
+                        try:
+                            reponse = requests.post(
+                                f"{API_BASE_URL}/api/analytique/resultats-nuit/{selected_id}/valider",
+                                json={
+                                    "id_medecin_validateur": int(medecin_id),
+                                    "commentaire": commentaire or None,
+                                },
+                                timeout=15,
+                            )
+                            reponse.raise_for_status()
+                            st.success("Diagnostic validé avec succès.")
+                            get_resultats.clear()
+                            get_liste_nuits.clear()
+                        except requests.exceptions.RequestException as e:
+                            detail = ""
+                            if e.response is not None:
+                                try:
+                                    detail = e.response.json().get("message", "")
+                                except ValueError:
+                                    detail = e.response.text
+                            st.error(f"Échec de la validation : {detail or e}")
+
+            with col_redirect:
+                st.link_button(
+                    "Ouvrir la fiche patient dans CliniquePlus",
+                    f"{ANGULAR_BASE_URL}/nuitspatients",
+                )
         else:
             st.error("Impossible de charger le détail de la nuit.")
 else:
