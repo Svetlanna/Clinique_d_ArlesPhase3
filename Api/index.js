@@ -19,7 +19,6 @@ app.use('/api/med', MedecinsRoute);
 app.use('/api/appareil', appareilRoutes);
 app.use('/api/analytique', analytiqueRoutes);
 
-// 2. REGISTER THE AUTH ROUTE
 app.use('/auth', authRoutes);
 
 app.listen(3000, () => console.log(`Server running on http://localhost:3000`));

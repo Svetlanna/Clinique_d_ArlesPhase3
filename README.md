@@ -11,7 +11,7 @@
 [![SCSS](https://img.shields.io/badge/SCSS-CC6699?style=for-the-badge&logo=sass&logoColor=white)](https://sass-lang.com/)
 [![Trello](https://img.shields.io/badge/Trello-0052CC?style=for-the-badge&logo=trello&logoColor=white)](https://trello.com/)
 
-Ce projet consiste en un prototype de DPI complet  intégrant des briques IA pour assurer la supervision des nuits d'études au sein de la clinique du sommeil d'Arles (fictif).
+Ce projet consiste en un prototype de DPI complet intégrant des briques IA pour assurer la supervision des nuits d'études au sein de la clinique du sommeil d'Arles (fictif) : détection/validation des événements respiratoires d'une nuit et prédiction des comorbidités probables d'un patient (`Etl/base-analytique-et-apps/ia_comorbidites.py`, un RandomForest par comorbidité).
 
 ## Utilisation
 
@@ -23,21 +23,21 @@ Ce projet consiste en un prototype de DPI complet  intégrant des briques IA pou
 
 ## UML / Diagramme d'utilisation
 
-![image](diagram/diagram_projet.drawio.png)
+![image](schemas_et_diagramme/diagram_projet.drawio.png)
 
 ## Diagramme base de données :
 
 ### 1. Base MySQL
 
-![image](diagram/mld_mysql/schema_bdd_leger.jpg)
+![image](schemas_et_diagramme/mld_mysql/schema_bdd_leger.jpg)
 
 ### 2. Datalake
 
-![image](diagram/mld_datalake/schema_bdd_datalake.jpg) 
+![image](schemas_et_diagramme/mld_datalake/schema_bdd_datalake.jpg) 
 
 ### 3. Base analytique
 
-![image](diagram/mld_base_analytique/schema_bdd_analytique.jpg)
+![image](schemas_et_diagramme/mld_base_analytique/schema_bdd_analytique.jpg)
 
 # Installation
 ### 1. Initialiser les bases de données
@@ -57,6 +57,8 @@ Ce projet dipose de deux bases de données :
 
 Ce sont deux copies indépendantes du même fichier, sans synchronisation automatique : si vous relancez `etl2/extract2.py`, pensez à recopier le fichier mis à jour vers la racine pour que les apps Streamlit voient les nouvelles données.
 
+**Modèles IA (comorbidités)** : `models/` à la racine contient un `.pkl` par comorbidité (RandomForest entraîné via `Etl/base-analytique-et-apps/ia_comorbidites.py`, features = indicateurs de nuit + IMC/tabac du patient). Le dossier est créé/rempli automatiquement au premier lancement de l'app Streamlit "Résultats nuit (IA)" si absent — aucune étape manuelle requise.
+
 ### 2. Installez les dépendences :
 Afin que le projet soit fonctionnel, les environnements comprenant les dépendences nécessaires au fonctionnement du projet doivent être installés.
 
@@ -66,10 +68,10 @@ Positionnez-vous à la racine de votre projet et effectuez ces commandes :
 
 ```bash 
 cd Api
-cp .env.example .env
+cp ../.env.example .env
 npm install
 ```
-** Veuillez renseigner les bons identifiants de connexion à votre base de données MYSQL créér précédemment
+** Veuillez renseigner les bons identifiants de connexion à votre base de données MYSQL créér précédemment (`DB_NAME=cliniquearles`), ainsi que `PYTHON_PATH` (ex. `python3` sous Linux/macOS) : l'Api lance des scripts Python (`Etl/index.py`) en sous-processus pour certaines mises à jour de nuit.
 ```bash
 cd ../Front
 npm install
@@ -109,18 +111,21 @@ cd Front/
 ng serve
 ```
 
-Les deux apps Streamlit du dossier `Etl/` (base analytique déjà initialisée requise, cf. étape 1) sont accessibles depuis des boutons de la sidebar Angular (rubriques "Résultats nuit (IA)" et "Suivi CPAP", selon rôle) : elles doivent donc tourner sur des ports fixes distincts pour que ces liens fonctionnent.
+Les deux apps Streamlit du dossier `Etl/` (base analytique déjà initialisée requise, cf. étape 1) sont accessibles depuis des liens de la sidebar Angular (`Front/src/app/components/sidebar/`), avec des ports **codés en dur côté front** (`sidebar.ts`) : elles doivent donc impérativement tourner sur ces ports précis pour que les liens fonctionnent.
 
-```bash
-cd Etl/base-analytique-et-apps/Dashboard_CPAP
-streamlit run dashboard_main.py --server.port 8501
-```
 ```bash
 cd Etl/base-analytique-et-apps
-streamlit run app_resultats_nuit_avec_ia.py --server.port 8502
+streamlit run app_resultats_nuit_avec_ia.py --server.port 8501
+```
+```bash
+cd Etl/base-analytique-et-apps/Dashboard_CPAP
+streamlit run dashboard_main.py --server.port 8502
 ```
 
-Depuis l'app "Résultats des Nuits d'Étude", le bouton **Valider le diagnostic** appelle directement `POST /api/analytique/resultats-nuit/:id_nuit/valider` sur l'Api Express (nécessite donc l'Api démarrée sur `http://localhost:3000`) ; le bouton **Ouvrir la fiche patient dans CliniquePlus** ramène vers le Front Angular (`http://localhost:4200`).
+- "Résultats nuit (Validation)" (port 8501, visible aux rôles `operateur`/`admin`) → app "Résultats des Nuits d'Étude".
+- "Tableau de bord CPAP" (port 8502, visible aux rôles `medecin`/`admin`) → dashboard CPAP.
+
+Depuis l'app "Résultats des Nuits d'Étude", le bouton **Valider le diagnostic (génère le PDF)** appelle `POST /api/analytique/resultats-nuit/:id_nuit/valider` sur l'Api Express (nécessite donc l'Api démarrée sur `http://localhost:3000`) : celle-ci recalcule les indicateurs depuis les capteurs, met à jour `resultat_nuit`, synchronise la galaxie analytique, puis génère le dossier patient en PDF (`Api/models/dossierPatientPdf.js`) sous `Api/data/dossiers-patients/dossier-patient-{id_patient}-nuit-{id_nuit}.pdf` — en y intégrant les courbes de la nuit (SpO2, débit nasal, ronflements) si elles ont déjà été produites par l'ETL Python dans `Etl/outputs`. Le chemin du PDF est renvoyé dans la réponse JSON ; il n'existe pas encore de route pour le télécharger depuis le Front. Le bouton **Ouvrir la fiche patient dans CliniquePlus** ramène vers le Front Angular (`http://localhost:4200`).
 
 Et pour rejouer le mini ETL CPAP (lit `etl2/raw_cpap/*.csv`, alimente `faits_suivi_cpap_jour`) :
 ```bash
