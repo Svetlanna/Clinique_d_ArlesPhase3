@@ -15,8 +15,8 @@ export class SidebarComponent {
   protected readonly title = signal('CliniquePlus');
 
   // Apps Streamlit connectées directement à la base analytique (galaxie SQLite / MySQL).
-  protected readonly urlResultatsNuitIA = 'http://localhost:8501';
-  protected readonly urlDashboardCpap = 'http://localhost:8502';
+  protected readonly urlResultatsNuitIA = 'http://localhost:8502';
+  protected readonly urlDashboardCpap = 'http://localhost:8501';
 
   user = this.authService.currentUser;
 
