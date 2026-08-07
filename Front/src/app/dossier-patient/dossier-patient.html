@@ -1,0 +1,107 @@
+<div class="app-container">
+  <!-- Sidebar déjà gérée par votre shell -->
+  <div class="shell">
+    <app-sidebar></app-sidebar>
+  </div>
+
+  <div class="main">
+    <div class="content">
+
+      <!-- Carte 1 : Recherche -->
+      <div class="card">
+        <div class="card-hd">
+          <span class="card-hd-title">Rechercher un patient</span>
+        </div>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Nom du patient..."
+          [value]="recherche()"
+          (input)="onRechercheChange($any($event.target).value)"
+        />
+      </div>
+
+      <!-- Carte 2 : Liste Patients -->
+      <div class="card">
+        <div class="card-hd">
+          <span class="card-hd-title">Patients ({{ patientsFiltres().length }})</span>
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Âge</th>
+              <th>Sexe</th>
+              <th>Profession</th>
+              <th>IMC initial</th>
+              <th>Statut</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (patientsFiltres().length > 0) {
+              @for (p of patientsFiltres(); track p.id_patient) {
+                <tr [class.row-active]="p.id_patient === selectedPatientId()">
+                  <td>{{ p.patient }}</td>
+                  <td>{{ p.age }}</td>
+                  <td>{{ p.sexe }}</td>
+                  <td>{{ p.profession }}</td>
+                  <td>{{ p.imc_initial }}</td>
+                  <td>
+                    <span class="pill" [class.pill-green]="p.statut === 'Actif'" [class.pill-red]="p.statut !== 'Actif'">
+                      {{ p.statut }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn-voir" (click)="selectionnerPatient(p.id_patient)">
+                      Voir le dossier
+                    </button>
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="7" style="text-align:center;padding:24px;color:var(--text-tertiary)">
+                  Aucun patient trouvé.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Carte 3 : Détails (Conditionnelle) -->
+ @if (selectedPatientId() && patientDetail()) {
+  <div class="card">
+    <div class="card-hd">
+      <span class="card-hd-title">Informations Médicales : {{ patientDetail().patient.patient }}</span>
+    </div>
+
+    <!-- Conteneur Flex -->
+    <div class="details-flex">
+      <div class="details-col">
+        <h5>Résumé du suivi</h5>
+        <p><strong>Âge :</strong> {{ patientDetail().patient.age }} ans</p>
+        <p><strong>Dernier suivi :</strong> {{ patientDetail().dernierSuivi?.date_suivi | date:'dd/MM/yyyy' }}</p>
+        <p><strong>Note :</strong> {{ patientDetail().dernierSuivi?.notes_evolution }}</p>
+
+        <h5>Comorbidités :</h5>
+        <ul>
+          @for (c of patientDetail().comorbidites; track c.libelle) {
+            <li>{{ c.libelle }} - <em>{{ c.date_diagnostic | date:'yyyy' }}</em></li>
+          }
+        </ul>
+      </div>
+
+      <div class="actions-col">
+        <button class="btn-valider" [disabled]="!patientDetail()" (click)="genererFichierPatientPDF()">
+          Générer le PDF
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+    </div>
+  </div>
+</div>

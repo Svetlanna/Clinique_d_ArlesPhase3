@@ -9,7 +9,7 @@ import { SidebarComponent } from '../components/sidebar/sidebar';
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent],
   templateUrl: './nuits-patient.html',
-  styleUrl: './nuits-patient.css',
+  styleUrl: './nuits-patient.static',
 })
 export class NuitsPatient implements OnInit {
   private http = inject(HttpClient);

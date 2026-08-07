@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "b6f2a1f0-3c1e-4e6a-9b6d-clinique-arles-api",
     "name": "Clinique du Sommeil d'Arles - API",
-    "description": "Collection de toutes les routes Express existantes (Api/routes/*.js, montées dans Api/index.js). Format Postman Collection v2.1, importable dans Bruno.",
+    "description": "Collection de toutes les routes Express existantes (Api/routes/*.js). Format Postman Collection v2.1, importable dans Bruno.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -93,24 +93,6 @@
           "response": []
         },
         {
-          "name": "Mettre à jour le médecin",
-          "request": {
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"idMedecin\": 1\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/nuit/1/medecin",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "nuit", "1", "medecin"]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Update nuit (commentaire + médecin, spawn Etl/index.py)",
           "request": {
             "method": "PUT",
@@ -125,7 +107,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "nuit", "1", "update"]
             },
-            "description": "Spawn du process Python Etl/index.py update <commentaire> <idMedecin> <id_nuit>. Nécessite un interpréteur Python valide (PYTHON_PATH ou `python` dans le PATH)."
+            "description": "Attention : appelle Etl/index.py via spawn, script actuellement absent du dépôt (route cassée)."
           },
           "response": []
         }
@@ -243,8 +225,78 @@
       ]
     },
     {
+      "name": "CPAP",
+      "item": [
+        {
+          "name": "Suivi CPAP (faits_suivi_cpap_jour, etl2/base_analytique.db)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cpap/",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cpap", ""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Analytique",
       "item": [
+        {
+          "name": "Résultats nuit (liste + détail)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/resultats-nuit?id_nuit=1&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "resultats-nuit"],
+              "query": [
+                { "key": "id_nuit", "value": "1" },
+                { "key": "search", "value": "", "disabled": true }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Prédiction comorbidités (IA)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/comorbidites?id_patient=1&id_nuit=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "comorbidites"],
+              "query": [
+                { "key": "id_patient", "value": "1" },
+                { "key": "id_nuit", "value": "1" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Dashboard CPAP (overview + alertes + IA)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/analytique/dashboard?id_patient=1&days=30&seuil=0.35",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "analytique", "dashboard"],
+              "query": [
+                { "key": "id_patient", "value": "1" },
+                { "key": "days", "value": "30" },
+                { "key": "seuil", "value": "0.35" }
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Valider le diagnostic d'une nuit",
           "request": {
@@ -259,8 +311,7 @@
               "raw": "{{baseUrl}}/api/analytique/resultats-nuit/1/valider",
               "host": ["{{baseUrl}}"],
               "path": ["api", "analytique", "resultats-nuit", "1", "valider"]
-            },
-            "description": "Calcule les indicateurs cliniques de la nuit depuis raw/traite/signal-psg-patient-<id_patient>-nuit-<id_nuit>.csv + evenement_respiratoire, upsert dans resultat_nuit, synchronise la galaxie SQLite (faits_nuits/dim_*) et génère le PDF du dossier patient."
+            }
           },
           "response": []
         },
@@ -278,8 +329,7 @@
               "raw": "{{baseUrl}}/api/analytique/cpap/import",
               "host": ["{{baseUrl}}"],
               "path": ["api", "analytique", "cpap", "import"]
-            },
-            "description": "Lit le CSV de suivi CPAP quotidien et insère dans faits_suivi_cpap_jour (calcul des alertes observance < 4h / IAH résiduel > 5)."
+            }
           },
           "response": []
         }

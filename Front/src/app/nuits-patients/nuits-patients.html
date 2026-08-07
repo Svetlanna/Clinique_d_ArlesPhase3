@@ -29,7 +29,13 @@
               @for (nuit of nuits(); track nuit.id_nuit) {
                 <tr>
                   <td>{{ nuit.nom_patient }}</td>
-                  <td>{{ nuit.nom_medecinValidateur }}</td>
+                  <td>{{nuit.nom_medecinValidateur}}</td>
+                  <td> <select (change)="chargerMedecin(nuit.id_nuit, +$any($event.target).value)">
+                         <option value="">-- Choisir --</option>
+                        @for(medecin of medecines(); track $index) {
+                       <option [value]="medecin.id_personnel">{{ medecin.prenom }} {{ medecin.nom }}</option> }
+                       </select>
+                  </td>
                   <td>{{ nuit.date_validation | date:'dd/MM/yyyy' }}</td>
                   <td>{{ nuit.iah }}</td>
                   <td>{{ nuit.severite_iah }}</td>
@@ -39,7 +45,12 @@
                   <td>{{ nuit.spo2_min }}</td>
                   <td>{{ nuit.spo2_moy }}</td>
                   <td>{{ nuit.duree_sommeil_min }}</td>
-                  <td class="commentaire-cell">{{ nuit.commentaire_medical }}</td>
+                  <td class="commentaire-cell">
+                    <textarea class="commentaire-input"
+                      (input)="commentaire.set($any($event.target).value); identifier.set(nuit.id_nuit)"
+                      placeholder="Ajouter un commentaire...">{{ nuit.commentaire_medical }}</textarea>
+                    <button class="btn-enregistrer" (click)="enregistrer()">Enregistrer</button>
+                  </td>
                 </tr>
               }
             } @else {
@@ -55,4 +66,8 @@
 
     </div>
   </div>
+  @if (popUp()) {
+  <div class = "popUp">
+    <span class="popUpText" id="myPopUP">Commentaire enregistré</span>
+  </div>}
 </div>

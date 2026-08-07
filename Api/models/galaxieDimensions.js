@@ -1,7 +1,7 @@
 // Fonctions partagées pour synchroniser les dimensions de la galaxie SQLite
 // (dim_temps notamment, utilisée à la fois par faits_nuits et faits_suivi_cpap_jour).
 // Compatible avec n'importe quelle instance better-sqlite3 dont le schéma
-// correspond à base_analytique.db (racine ou etl2/).
+// correspond à 77base_analytique.db (racine ou etl2/).
 
 const JOURS_FR = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 

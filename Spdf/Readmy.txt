@@ -1,0 +1,14 @@
+Frontend —
+ Front/src/app/dossier-patient/
+Front/src/app/services/auth.ts
+
+API
+
+Api/routes/patientRoutes.js
+
+Api/controllers/patientController.js
+
+getPatients()
+getPatientDetail()
+getPatientResultats()
+

@@ -9,34 +9,37 @@ import { AuthService } from '../services/auth';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './authification.html',
-  styleUrl: './authification.css',
+  styleUrl: './authification.static',
 })
 export class Authification {
+  // Attributs
   protected readonly title = signal('CliniquePlus');
-
   message: string = '';
   loginForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     protected authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
+    // Initialisation du formulaire avec validateurs
     this.loginForm = this.fb.group({
       login: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(5)]]
+      password: ['', [Validators.required, Validators.minLength(5)]],
     });
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
+        next: (res) => {
+          console.log('Login OK', res);
           this.router.navigate(['/dashboard']);
         },
-        error: () => {
+        error: (err) => {
+          console.error('Erreur login', err); // <-- regardez le statut et le message ici
           this.message = 'Connexion refusée !';
-        }
+        },
       });
     }
   }

@@ -9,7 +9,7 @@ import { AuthService } from '../services/auth';
   standalone: true,
   imports: [CommonModule, RouterModule, SidebarComponent],
   templateUrl: './test-medecin.html',
-  styleUrl: './test-medecin.css',
+  styleUrl: './test-medecin.static',
 })
 export class TestMedecin {
   private authService = inject(AuthService);

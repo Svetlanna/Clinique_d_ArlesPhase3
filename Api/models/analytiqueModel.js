@@ -9,10 +9,10 @@ const __dirname = path.dirname(__filename);
 
 // Galaxie SQLite "racine", celle utilisée par les apps Streamlit de Etl/
 // (app_resultats_nuit_avec_ia.py, ia_comorbidites.py) pour l'entraînement IA.
-// base_analytique.db est gitignoré (*.db) : sur un clone neuf, better-sqlite3
+// 77base_analytique.db est gitignoré (*.db) : sur un clone neuf, better-sqlite3
 // crée un fichier vide sans aucune table. On rejoue le schéma (IF NOT EXISTS)
 // à chaque démarrage pour que la galaxie se reconstruise seule.
-const db = new Database(path.join(__dirname, '../../base_analytique.db'));
+const db = new Database(path.join(__dirname, '../../77base_analytique.db'));
 db.exec(fs.readFileSync(path.join(__dirname, 'galaxieSchema.sql'), 'utf-8'));
 
 export const computeSeveriteIah = (iah) => {
